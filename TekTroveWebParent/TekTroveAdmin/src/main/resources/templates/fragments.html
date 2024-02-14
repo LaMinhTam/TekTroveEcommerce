@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="page_header(title)">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>[[${title}]] - TekTrove</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</head>
+<body>
+<div th:fragment="navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand img-fluid" th:href="@{/}">
+            <img style="max-width: 100px; height: auto;" th:src="@{/images/logo.png}"/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" th:href="@{/users}">Users</a>
+                <a class="nav-item nav-link" href="#">Categories</a>
+                <a class="nav-item nav-link" href="#">Brands</a>
+                <a class="nav-item nav-link" href="#">Products</a>
+                <a class="nav-item nav-link" href="#">Customers</a>
+                <a class="nav-item nav-link" href="#">Shipping</a>
+                <a class="nav-item nav-link" href="#">Orders</a>
+                <a class="nav-item nav-link" href="#">Sales Report</a>
+                <a class="nav-item nav-link" href="#">Articles</a>
+                <a class="nav-item nav-link" href="#">Menus</a>
+                <a class="nav-item nav-link" href="#">Settings</a>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<form th:action="@{/{moduleUrl}/page/1(moduleUrl=${moduleUrl})}" class="form-inline my-3" th:fragment="search_form">
+    <div class="input-group">
+        <input type="hidden" name="sortField" th:value="${sortField}"/>
+        <input type="hidden" name="sortDir" th:value="${sortDir}"/>
+        <input type="search" name="keyword" th:value="${keyword}" class="form-control" required
+               placeholder="Search..." aria-label="Search" aria-describedby="button-addon"/>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary" id="button-addon">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </div>
+    <div class="d-flex align-items-center">
+        <a type="button" class="btn btn-secondary ml-2" th:href="@{/{moduleUrl}(moduleUrl=${moduleUrl})}">
+            <i class="fa-solid fa-eraser"></i> Clear
+        </a>
+    </div>
+</form>
+
+<th:block th:fragment="sort_link(fieldName, displayName)">
+    <a class="text-white"
+       th:href="@{${moduleUrl} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">
+        [[${displayName}]]
+    </a>
+</th:block>
+
+<th:block th:fragment="status(entityId, status)">
+    <a class="fa-2x fa-solid fa-circle-check"
+       th:classappend="${status} ? 'icon-green' : 'icon-dark'"
+       th:href="@{/{moduleUrl}/{id}/enabled/{status}(moduleUrl=${moduleUrl},id=${entityId},status=${!status})}"
+    ></a>
+</th:block>
+
+<th:block th:fragment="edit(entityId)">
+    <a class="fa-2x fa-solid fa-pen-to-square icon-green"
+       th:href="@{/{moduleUrl}/edit/{id}(moduleUrl=${moduleUrl},id=${entityId})}"></a>
+</th:block>
+
+<th:block th:fragment="delete(entityId)">
+    <a class="fa-2x fa-solid fa-trash icon-red link-delete"
+       data-target="#deleteModal" data-toggle="modal" th:entityId="${entityId}"
+       th:href="@{/{moduleUrl}/delete/{id}(moduleUrl=${moduleUrl},id=${entityId})}"></a>
+</th:block>
+
+<div th:fragment="pagination(entityName)" th:remove="tag">
+    <div class="text-center m-1" th:if="${totalItems > 0}">
+			<span>Showing [[${entityName}]] # [[${startCount}]] to
+				[[${endCount}]] of [[${totalItems}]]</span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItems > 0}">
+        <span>No [[${entityName}]] found</span>
+    </div>
+
+    <div th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination justify-content-center flex-wrap">
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(1, 'First')}"></a>
+                </li>
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${currentPage - 1}, 'Previous')}"></a>
+                </li>
+
+                <li th:class="${currentPage != i ? 'page-item': 'page-item active'}"
+                    th:each="i : ${#numbers.sequence(1, totalPages)}"><a
+                        th:replace="~{fragments :: page_link(${i}, ${i})}"></a></li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${currentPage + 1}, 'Next')}"></a>
+                </li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${totalPages}, 'Last')}"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<a th:fragment="page_link(pageNum, label)" class="page-link"
+   th:href="@{'/' + ${moduleUrl} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
+
+<div class="text-center" th:fragment="footer">
+    <p>TekTrove Control Panel - Copyright &copy; TekTrove</p>
+</div>
+</body>
+</html>

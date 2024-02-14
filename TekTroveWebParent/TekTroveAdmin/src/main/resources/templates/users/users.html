@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('User')}"></head>
+<body>
+<div th:replace="~{fragments::navbar}"></div>
+<div class="container-fluid">
+    <div>
+        <h1>Manage Users</h1>
+        <a th:href="@{/users/new}" class="fas fa-user-plus fa-2x"></a>
+        <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/users/export/csv}"></a>
+        <a class="fa-solid fa-file-excel fa-2x icon-dark" th:href="@{/users/export/excel}"></a>
+        <a class="fa-solid fa-file-pdf fa-2x icon-dark" th:href="@{/users/export/pdf}"></a>
+    </div>
+
+    <form th:replace="~{fragments::search_form}"></form>
+
+
+    <div th:if="${message != null}" class="alert alert-success text-center" th:text="${message}"></div>
+
+    <div class="full-details">
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th class="responsive-column">
+                    <th:block th:replace="~{fragments::sort_link('id', 'Id')}"></th:block>
+                </th>
+                <th>Photo</th>
+                <th class="responsive-column">
+                    <th:block th:replace="~{fragments::sort_link('email', 'E-mail')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('firstName', 'First Name')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('lastName', 'Last Name')}"></th:block>
+                </th>
+                <th>Roles</th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('enabled', 'Enabled')}"></th:block>
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td class="responsive-column" th:text="${user.id}"></td>
+                <td>
+                    <img th:src="@{${user.photosImagePath}}" style="width: 100px">
+                </td>
+                <td class="responsive-column" th:text="${user.email}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.roles}"></td>
+                <td>
+                    <th:block th:replace="~{fragments::status(${user.id}, ${user.enabled})}"></th:block>
+                </td>
+                <td>
+                    <th:block th:replace="~{fragments::edit(${user.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${user.id})}"></th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="user : ${users}" class="row m-1">
+            <div class="col-4">
+                <img th:src="@{${user.photosImagePath}}" style="width: 100px">
+            </div>
+            <div class="col-8">
+                <div th:text="${user.fullName}"></div>
+                <div th:text="${user.roles}"></div>
+                <div class="mt-2">
+                    <th:block th:replace="~{fragments::status(${user.id}, ${user.enabled})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::edit(${user.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${user.id})}"></th:block>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments::pagination('user')}"></div>
+
+    <div th:replace="~{fragments::footer}"></div>
+
+    <div th:replace="~{modal_fragments::confirmModal}"></div>
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".link-delete").on("click", function (e) {
+            e.preventDefault();
+            showDeleteModal($(this), 'user');
+        })
+    })
+</script>
+
+</body>
+</html>
