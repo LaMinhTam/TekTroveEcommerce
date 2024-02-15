@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Forbidden')}">
+</head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::navbar}"></div>
+
+    <div class="error-container">
+        <h2>Oops! Access Forbidden.</h2>
+        <p>Sorry, but you are not authorized to access this resource.</p>
+        <p>If you believe this is an error, please contact support.</p>
+    </div>
+
+    <div th:replace="~{fragments::footer}"></div>
+</div>
+</body>
+</html>

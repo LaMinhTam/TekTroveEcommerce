@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Error')}">
+</head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::navbar}"></div>
+
+    <div class="error-container">
+        <h2>Oops! Something went wrong.</h2>
+        <p>We apologize for the inconvenience. Please try again later.</p>
+        <p>If the problem persists, please contact support.</p>
+    </div>
+
+    <div th:replace="~{fragments::footer}"></div>
+</div>
+</body>
+</html>

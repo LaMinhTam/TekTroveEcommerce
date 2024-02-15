@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Internal Server Error')}">
+</head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::navbar}"></div>
+
+    <div class="error-container">
+        <h2>Oops! Internal Server Error.</h2>
+        <p>Sorry, something went wrong on our end.</p>
+        <p>Our team has been notified and will work to fix this issue.</p>
+    </div>
+
+    <div th:replace="~{fragments::footer}"></div>
+</div>
+</body>
+</html>
