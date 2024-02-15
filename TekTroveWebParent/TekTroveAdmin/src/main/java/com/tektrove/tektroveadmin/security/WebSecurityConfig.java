@@ -36,17 +36,23 @@ public class WebSecurityConfig {
     SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authenticationProvider(authenticationProvider());
 
-        httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/images/**", "/js/**", "/css/**", "/webjars/**").permitAll()
+                        .anyRequest().authenticated())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
                         .defaultSuccessUrl("/")
                         .permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/").permitAll());
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
+                .rememberMe(rememberMe -> rememberMe
+                        .key("wc\"7u14UFcRXO%>")
+                        .tokenValiditySeconds(86400)
+                        .userDetailsService(this.userDetailsService()));
 
         return httpSecurity.build();
     }
 
-    @Bean
-    WebSecurityCustomizer configureWebSecurity() throws Exception {
-        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/css/**", "/webjars/**");
-    }
+//    @Bean
+//    WebSecurityCustomizer configureWebSecurity() throws Exception {
+//        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/css/**", "/webjars/**");
+//    }
 }

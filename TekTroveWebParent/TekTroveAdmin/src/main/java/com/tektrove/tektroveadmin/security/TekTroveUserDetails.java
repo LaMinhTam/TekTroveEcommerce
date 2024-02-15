@@ -56,7 +56,7 @@ public class TekTroveUserDetails implements UserDetails {
         return user.isEnabled();
     }
 
-    public String getUserName() {
+    public String getFullName() {
         return user.getFullName();
     }
 }
