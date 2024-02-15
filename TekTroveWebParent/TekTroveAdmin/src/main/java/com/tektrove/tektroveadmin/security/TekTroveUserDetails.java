@@ -59,4 +59,12 @@ public class TekTroveUserDetails implements UserDetails {
     public String getFullName() {
         return user.getFullName();
     }
+
+    public void setFirstName(String firstName) {
+        this.user.setFirstName(firstName);
+    }
+
+    public void setLastName(String lastName){
+        this.user.setLastName(lastName);
+    }
 }
