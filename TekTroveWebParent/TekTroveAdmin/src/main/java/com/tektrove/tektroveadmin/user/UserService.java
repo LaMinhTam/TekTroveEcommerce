@@ -4,10 +4,12 @@ import com.tektrovecommon.entity.Role;
 import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.UserNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,10 +22,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final static int USER_PER_PAGE = 5;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<User> listAll() {
@@ -59,6 +63,7 @@ public class UserService {
             } else {
                 encodePassword(user);
             }
+            encodePassword(user);
         } else {
             encodePassword(user);
         }
@@ -66,7 +71,7 @@ public class UserService {
     }
 
     private void encodePassword(User user) {
-        String encodePassword = user.getPassword();
+        String encodePassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodePassword);
     }
 
