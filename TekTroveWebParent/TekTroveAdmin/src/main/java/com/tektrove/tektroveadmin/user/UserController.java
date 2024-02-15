@@ -1,10 +1,13 @@
 package com.tektrove.tektroveadmin.user;
 
-import com.itextpdf.kernel.geom.PageSize;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Table;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.opencsv.CSVWriter;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Role;
@@ -31,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("users")
@@ -205,33 +209,37 @@ public class UserController {
     }
 
     @GetMapping("/export/pdf")
-    public void exportPdf(HttpServletResponse response) throws IOException {
+    public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         setResponseHeader(response, "application/pdf", ".pdf", "users");
+
         List<User> users = userService.listAll();
 
-        try (PdfWriter writer = new PdfWriter(response.getOutputStream());
-             PdfDocument pdf = new PdfDocument(writer);
-             Document document = new Document(pdf)) {
+        Document document = new Document();
+        PdfWriter.getInstance(document, response.getOutputStream());
 
-            Table table = new Table(new float[]{1.2f, 3.5f, 3.0f, 3.0f, 3.0f, 1.7f});
-            table.addHeaderCell("ID");
-            table.addHeaderCell("Email");
-            table.addHeaderCell("Enabled");
-            table.addHeaderCell("First Name");
-            table.addHeaderCell("Last Name");
-            table.addHeaderCell("Roles");
+        document.open();
+        PdfPTable table = new PdfPTable(6);
 
-            for (User user : users) {
-                table.addCell(String.valueOf(user.getId()));
-                table.addCell(user.getEmail());
-                table.addCell(user.isEnabled() ? "Enabled" : "Disabled");
-                table.addCell(user.getFirstName());
-                table.addCell(user.getLastName());
-                table.addCell(user.getRolesAsString());
-            }
+        Stream.of("ID", "Email", "Enabled", "First Name", "Last Name", "Roles")
+                .forEach(headerTitle -> {
+                    PdfPCell header = new PdfPCell();
+                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                    header.setBorderWidth(1);
+                    header.setPhrase(new Phrase(headerTitle));
+                    table.addCell(header);
+                });
 
-            document.add(table);
-        }
+        users.forEach(user -> {
+            table.addCell(String.valueOf(user.getId()));
+            table.addCell(user.getEmail());
+            table.addCell(user.isEnabled() ? "Enabled" : "Disabled");
+            table.addCell(user.getFirstName());
+            table.addCell(user.getLastName());
+            table.addCell(user.getRolesAsString());
+        });
+
+        document.add(table);
+        document.close();
     }
 
     public void setResponseHeader(HttpServletResponse response, String contentType,
