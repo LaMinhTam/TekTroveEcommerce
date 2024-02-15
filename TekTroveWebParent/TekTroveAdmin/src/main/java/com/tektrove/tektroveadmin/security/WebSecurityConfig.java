@@ -38,6 +38,11 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(auth -> auth
                         .requestMatchers("/images/**", "/js/**", "/css/**", "/webjars/**").permitAll()
+                        .requestMatchers("/users/**", "/settings/**").hasAuthority("Admin")
+                        .requestMatchers("/categories/**", "/brands/**", "/articles/**", "/menus/**").hasAnyAuthority("Admin", "Editor")
+                        .requestMatchers("/customers/**","/shipping/**","/reports/**").hasAnyAuthority("Admin","Salesperson")
+                        .requestMatchers("/orders/**").hasAnyAuthority("Admin","Salesperson","Shipper")
+                        .requestMatchers("/product/**").hasAnyAuthority("Admin","Salesperson","Editor","Shipper")
                         .anyRequest().authenticated())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
                         .defaultSuccessUrl("/")

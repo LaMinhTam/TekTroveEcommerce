@@ -1,13 +1,17 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments::page_header('Home')}">
 </head>
 <body>
 <div th:replace="~{fragments::navbar}"></div>
 <div class="container-fluid">
     <div>
-        <h1>Welcome to TechTrove Admin Control Panel</h1>
+        <h1>TechTrove Control Panel</h1>
+        Welcome <a th:href="@{/account}" sec:authentication="principal.fullName"></a>
+        <span sec:authentication="principal.authorities"></span>
     </div>
+    <div th:replace="~{fragments::footer}"></div>
 </div>
 </body>
 </html>
