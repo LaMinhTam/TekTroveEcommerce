@@ -60,4 +60,16 @@ public class User {
     public String getFullName(){
         return firstName + " " + lastName;
     }
+
+    @Transient
+    public String getRolesAsString() {
+        StringBuilder rolesAsString = new StringBuilder();
+        for (Role role : roles) {
+            if (!rolesAsString.isEmpty()) {
+                rolesAsString.append(", ");
+            }
+            rolesAsString.append(role.getName());
+        }
+        return rolesAsString.toString();
+    }
 }

@@ -1,9 +1,20 @@
 package com.tektrove.tektroveadmin.user;
 
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
+import com.opencsv.CSVWriter;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Role;
 import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.UserNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,7 +53,7 @@ public class UserController {
 
         model.addAttribute("users", users.getContent());
 
-        model.addAttribute("sortField",sortField);
+        model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
         model.addAttribute("reverseSortDir", reverseSortDir);
@@ -132,5 +148,102 @@ public class UserController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
         }
         return defaultRedirectURL;
+    }
+
+    @GetMapping("/export/csv")
+    public void exportCSV(HttpServletResponse response) throws IOException {
+        setResponseHeader(response, "text/csv", ".csv", "users_");
+        List<User> users = userService.listAll();
+
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(response.getOutputStream()))) {
+            writer.writeNext(new String[]{"ID", "Email", "Enabled", "First Name", "Last Name", "Roles"});
+
+            for (User user : users) {
+                writer.writeNext(new String[]{
+                        String.valueOf(user.getId()),
+                        user.getEmail(),
+                        String.valueOf(user.isEnabled()),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getRolesAsString()
+                });
+            }
+        }
+    }
+
+    @GetMapping("/export/excel")
+    public void exportExcel(HttpServletResponse response) throws IOException {
+        setResponseHeader(response, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", ".xlsx", "users_");
+
+        List<User> users = userService.listAll();
+
+        try (XSSFWorkbook workbook = new XSSFWorkbook();
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            XSSFSheet sheet = workbook.createSheet("Users");
+
+            Row headerRow = sheet.createRow(0);
+            String[] headers = {"ID", "Email", "Enabled", "First Name", "Last Name", "Roles"};
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+            }
+
+            int rowNum = 1;
+            for (User user : users) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(user.getId());
+                row.createCell(1).setCellValue(user.getEmail());
+                row.createCell(2).setCellValue(user.isEnabled());
+                row.createCell(3).setCellValue(user.getFirstName());
+                row.createCell(4).setCellValue(user.getLastName());
+                row.createCell(5).setCellValue(user.getRolesAsString());
+            }
+
+            workbook.write(out);
+            response.getOutputStream().write(out.toByteArray());
+        }
+    }
+
+    @GetMapping("/export/pdf")
+    public void exportPdf(HttpServletResponse response) throws IOException {
+        setResponseHeader(response, "application/pdf", ".pdf", "users");
+        List<User> users = userService.listAll();
+
+        try (PdfWriter writer = new PdfWriter(response.getOutputStream());
+             PdfDocument pdf = new PdfDocument(writer);
+             Document document = new Document(pdf)) {
+
+            Table table = new Table(new float[]{1.2f, 3.5f, 3.0f, 3.0f, 3.0f, 1.7f});
+            table.addHeaderCell("ID");
+            table.addHeaderCell("Email");
+            table.addHeaderCell("Enabled");
+            table.addHeaderCell("First Name");
+            table.addHeaderCell("Last Name");
+            table.addHeaderCell("Roles");
+
+            for (User user : users) {
+                table.addCell(String.valueOf(user.getId()));
+                table.addCell(user.getEmail());
+                table.addCell(user.isEnabled() ? "Enabled" : "Disabled");
+                table.addCell(user.getFirstName());
+                table.addCell(user.getLastName());
+                table.addCell(user.getRolesAsString());
+            }
+
+            document.add(table);
+        }
+    }
+
+    public void setResponseHeader(HttpServletResponse response, String contentType,
+                                  String extension, String prefix) {
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        String timestamp = dateFormatter.format(new Date());
+        String fileName = prefix + "_" + timestamp + extension;
+
+        response.setContentType(contentType);
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=\"" + fileName + "\"";
+        response.setHeader(headerKey, headerValue);
     }
 }

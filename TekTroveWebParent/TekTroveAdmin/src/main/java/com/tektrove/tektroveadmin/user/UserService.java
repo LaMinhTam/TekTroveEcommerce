@@ -26,6 +26,10 @@ public class UserService {
         this.roleRepository = roleRepository;
     }
 
+    public List<User> listAll() {
+        return userRepository.findAll();
+    }
+
     public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
@@ -48,14 +52,14 @@ public class UserService {
 
     public User save(User user) {
         boolean isUpdating = user.getId() != null;
-        if(isUpdating){
+        if (isUpdating) {
             User existingUser = userRepository.findById(user.getId()).get();
-            if(user.getPassword().isEmpty()){
+            if (user.getPassword().isEmpty()) {
                 user.setPassword(existingUser.getPassword());
-            }else{
+            } else {
                 encodePassword(user);
             }
-        }else{
+        } else {
             encodePassword(user);
         }
         return userRepository.save(user);
@@ -68,7 +72,7 @@ public class UserService {
 
     public void deleteUserById(int id) throws UserNotFoundException {
         Long countById = userRepository.countById(id);
-        if(countById == null || countById == 0){
+        if (countById == null || countById == 0) {
             throw new UserNotFoundException("Could not find user with ID " + id);
         }
         userRepository.deleteById(id);
