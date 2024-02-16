@@ -40,6 +40,8 @@ public class CategoryController {
         model.addAttribute("categories", categories.getContent());
 
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
+        model.addAttribute("sortField", "name");
+        model.addAttribute("sortDir", sortDir);
         model.addAttribute("reverseSortDir", reverseSortDir);
         model.addAttribute("keyword", keyword);
         model.addAttribute("moduleUrl", "categories");

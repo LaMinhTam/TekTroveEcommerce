@@ -18,16 +18,16 @@
         <table class="table table-hover table-striped table-bordered">
             <thead class="thead-dark">
             <tr>
-                <th class="responsive-column">
+                <th>
                     Id
                 </th>
-                <th class="responsive-column">
+                <th>
                     Category Image
                 </th>
                 <th>
-                    Category Name
+                    <th:block th:replace="~{fragments::sort_link('name', 'Category Name')}"></th:block>
                 </th>
-                <th>
+                <th class="responsive-column">
                     Alias
                 </th>
                 <th>
@@ -38,12 +38,12 @@
             </thead>
             <tbody>
             <tr th:each="category : ${categories}">
-                <td class="responsive-column" th:text="${category.id}"></td>
+                <td th:text="${category.id}"></td>
                 <td>
                     <img th:src="@{${category.imagePath}}" style="width: 100px">
                 </td>
-                <td class="responsive-column" th:text="${category.name}"></td>
-                <td th:text="${category.alias}"></td>
+                <td th:text="${category.name}"></td>
+                <td class="responsive-column" th:text="${category.alias}"></td>
                 <td>
                     <th:block th:replace="~{fragments::status(${category.id}, ${category.enabled})}"></th:block>
                 </td>
