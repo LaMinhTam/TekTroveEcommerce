@@ -1,10 +1,7 @@
 package com.tektrovecommon.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@ToString(exclude = {"parent","children"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,5 +60,12 @@ public class Category {
 
     public boolean isHasChildren() {
         return !children.isEmpty();
+    }
+
+    @Transient
+    public String getImagePath() {
+        if (this.id == null) return "/images/image-thumbnail.png";
+
+        return "/category-images/" + this.id + "/" + this.image;
     }
 }

@@ -10,8 +10,7 @@
         <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/categories/export/csv}"></a>
     </div>
 
-    <!--    <form th:replace="~{fragments::search_form}"></form>-->
-
+    <form th:replace="~{fragments::search_form}"></form>
 
     <div th:if="${message != null}" class="alert alert-success text-center" th:text="${message}"></div>
 
@@ -41,7 +40,7 @@
             <tr th:each="category : ${categories}">
                 <td class="responsive-column" th:text="${category.id}"></td>
                 <td>
-                    <!--                    <img th:src="@{${category.imagePath}}" style="width: 100px">-->
+                    <img th:src="@{${category.imagePath}}" style="width: 100px">
                 </td>
                 <td class="responsive-column" th:text="${category.name}"></td>
                 <td th:text="${category.alias}"></td>
@@ -63,7 +62,7 @@
     <div class="less-details">
         <div th:each="category : ${categories}" class="row m-1">
             <div class="col-4">
-                <!--                <img th:src="@{${category.imagePath}}" style="width: 100px">-->
+                <img th:src="@{${category.imagePath}}" style="width: 100px">
             </div>
             <div class="col-8">
                 <div th:text="${category.name}"></div>
