@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/categories/**", "/brands/**", "/articles/**", "/menus/**").hasAnyAuthority("Admin", "Editor")
                         .requestMatchers("/customers/**","/shipping/**","/reports/**").hasAnyAuthority("Admin","Salesperson")
                         .requestMatchers("/orders/**").hasAnyAuthority("Admin","Salesperson","Shipper")
-                        .requestMatchers("/product/**").hasAnyAuthority("Admin","Salesperson","Editor","Shipper")
+                        .requestMatchers("/products/**").hasAnyAuthority("Admin","Salesperson","Editor","Shipper")
                         .anyRequest().authenticated())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
                         .defaultSuccessUrl("/")
