@@ -6,7 +6,7 @@
     <div th:replace="~{fragments::navbar}"></div>
     <div class="text-center"><h2>Manage Users | [[${pageTitle}]]</h2></div>
     <form th:action="@{/users/save}" method="post" style="max-width: 700px; margin: 0 auto"
-          enctype="multipart/form-data" th:object="${user}">
+          enctype="multipart/form-data" th:object="${user}" onsubmit="return isEmailUnique(this)">
         <input type="hidden" th:field="*{id}"/>
         <div class="border border-secondary rounded p-3">
             <div class="form-group row">
@@ -72,8 +72,39 @@
             </div>
         </div>
     </form>
+
+    <div th:replace="~{modal_fragments::modal_dialog}"></div>
+
+    <div th:replace="~{fragments::footer}"></div>
+
     <script th:src="@{/js/common_form.js}">
     </script>
 </div>
+<script th:src="@{/js/common_form.js}"></script>
+<script>
+    function isEmailUnique(form) {
+        var email = form.email.value;
+        var id = form.id.value;
+
+        $.ajax({
+            url: '[[@{/users/checkEmail}]]',
+            type: 'GET',
+            data: {id: id, email: email},
+            success: function (response) {
+                if (response === true) {
+                    form.submit();
+                } else {
+                    showWarningModal('Email is already in use. Please choose a different email.');
+                }
+            },
+            error: function () {
+                showErrorModal('An error occurred while checking the email uniqueness.');
+            }
+        });
+        return false;
+    }
+
+</script>
+
 </body>
 </html>

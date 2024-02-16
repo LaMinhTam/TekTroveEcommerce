@@ -83,8 +83,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findUserByEmail(String username) {
-        return userRepository.findByEmail(username).get();
+    public User findUserByEmail(String username) throws UserNotFoundException {
+        return userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     public User updateAccount(User userInForm) {
@@ -104,4 +104,11 @@ public class UserService {
 
         return userRepository.save(userInDB);
     }
+
+    public boolean isEmailUnique(Integer id, String email) {
+        Optional<User> userByEmail = userRepository.findByEmail(email);
+
+        return (userByEmail.isEmpty() || userByEmail.get().getId().equals(id));
+    }
+
 }

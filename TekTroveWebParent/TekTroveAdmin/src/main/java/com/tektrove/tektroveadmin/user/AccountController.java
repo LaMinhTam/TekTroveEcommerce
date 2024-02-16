@@ -3,6 +3,7 @@ package com.tektrove.tektroveadmin.user;
 import com.tektrove.tektroveadmin.security.TekTroveUserDetails;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.User;
+import com.tektrovecommon.exception.UserNotFoundException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +28,7 @@ public class AccountController {
     }
 
     @GetMapping
-    public String viewDetail(@AuthenticationPrincipal TekTroveUserDetails loggedUser, Model model) {
+    public String viewDetail(@AuthenticationPrincipal TekTroveUserDetails loggedUser, Model model) throws UserNotFoundException {
         User user = userService.findUserByEmail(loggedUser.getUsername());
         model.addAttribute("user", user);
         return "users/account_form";

@@ -130,7 +130,7 @@ public class UserController {
             userService.save(user);
         }
         redirectAttributes.addFlashAttribute("message", "The user have been saved successfully");
-        return "redirect:/users/page/1?sortField=firstName&sortDir=true";
+        return "redirect:/users/page/1?sortField=firstName&sortDir=true&keyword=" + user.getEmail();
     }
 
     @GetMapping("/{id}/enabled/{enabled}")

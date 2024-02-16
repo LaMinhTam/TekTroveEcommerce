@@ -1,5 +1,7 @@
 package com.tektrove.tektroveadmin.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -9,6 +11,8 @@ import java.nio.file.Paths;
 import java.util.stream.Stream;
 
 public class FileUploadUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileUploadUtil.class);
+
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
 
@@ -22,14 +26,12 @@ public class FileUploadUtil {
     }
 
     public static void cleanDir(String dir) {
-        Path dirPath = Paths.get(dir);
-        if (Files.exists(dirPath)) {
-            try (Stream<Path> files = Files.list(dirPath)) {
-                files.filter(file -> !Files.isDirectory(file))
-                        .forEach(FileUploadUtil::deleteFile);
-            } catch (IOException e) {
-                throw new RuntimeException("Error cleaning directory: " + dir, e);
-            }
+        try {
+            Files.walk(Paths.get(dir))
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(FileUploadUtil::deleteFile);
+        } catch (IOException e) {
+            LOGGER.error("Error cleaning directory: {}", dir, e);
         }
     }
 
@@ -37,7 +39,7 @@ public class FileUploadUtil {
         try {
             Files.delete(file);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to delete file: " + file, e);
+            LOGGER.error("Failed to delete file: " + file, e);
         }
     }
 
@@ -47,7 +49,7 @@ public class FileUploadUtil {
         try {
             Files.delete(Paths.get(dir));
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            LOGGER.error("Error removing directory: {}", dir, e);
         }
     }
 }
