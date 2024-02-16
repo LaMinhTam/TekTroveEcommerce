@@ -2,10 +2,8 @@ package com.tektrove.tektroveadmin.category;
 
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Category;
-import com.tektrovecommon.entity.Role;
-import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.CategoryNotFoundException;
-import com.tektrovecommon.exception.UserNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -130,5 +128,9 @@ public class CategoryController {
         return defaultRedirectURL;
     }
 
-
+    @GetMapping("/export/csv")
+    public void exportCSV(HttpServletResponse response) throws IOException {
+        List<Category> categories = categoryService.getCategoriesUsedInForm();
+        CategoryExporter.exportCSV(categories, response);
+    }
 }
