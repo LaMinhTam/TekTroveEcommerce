@@ -1,23 +1,37 @@
 package com.tektrove.tektroveadmin.brand;
 
+import com.tektrove.tektroveadmin.category.CategoryService;
+import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Brand;
+import com.tektrovecommon.entity.Category;
+import com.tektrovecommon.entity.Role;
 import com.tektrovecommon.entity.User;
+import com.tektrovecommon.exception.BrandNotFoundException;
+import com.tektrovecommon.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("brands")
 public class BrandController {
-    @Autowired
-    private BrandService brandService;
-
+    private final BrandService brandService;
+    private final CategoryService categoryService;
     private final String defaultRedirectURL = "redirect:/brands/page/1?sortField=name&sortDir=asc";
+
+    public BrandController(BrandService brandService, CategoryService categoryService) {
+        this.brandService = brandService;
+        this.categoryService = categoryService;
+    }
 
     @GetMapping
     public String listAll() {
@@ -53,4 +67,64 @@ public class BrandController {
         return "brands/brands";
     }
 
+    @GetMapping("/new")
+    public String newBrand(Model model) {
+        List<Category> categories = categoryService.getCategoriesUsedInForm();
+        model.addAttribute("brand", new Brand());
+        model.addAttribute("pageTitle", "Create New Brand");
+        model.addAttribute("categories", categories);
+        return "brands/brand_form";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editBrand(Model model, RedirectAttributes redirectAttributes, @PathVariable int id) {
+        try {
+            Brand brand = brandService.findBrandById(id);
+            List<Category> categories = categoryService.getCategoriesUsedInForm();
+
+            model.addAttribute("pageTitle", "Edit Brand (Id: #" + id + ")");
+            model.addAttribute("brand", brand);
+            model.addAttribute("categories", categories);
+
+            return "brands/brand_form";
+        } catch (BrandNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return defaultRedirectURL;
+        }
+    }
+
+    @PostMapping("/save")
+    public String saveBrand(Brand brand, RedirectAttributes redirectAttributes, @RequestParam("thumbnail") MultipartFile multipartFile) throws IOException {
+        if (!multipartFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+
+            brand.setLogo(fileName);
+            Brand savedUser = brandService.save(brand);
+
+            String userPhotoDir = "../brand-logos/" + savedUser.getId();
+
+            FileUploadUtil.cleanDir(userPhotoDir);
+            FileUploadUtil.saveFile(userPhotoDir, fileName, multipartFile);
+        } else {
+            if (brand.getLogo().isEmpty()) {
+                brand.setLogo(null);
+            }
+            brandService.save(brand);
+        }
+        redirectAttributes.addFlashAttribute("message", "The brand have been saved successfully");
+        return "redirect:/brands/page/1?sortField=name&sortDir=true&keyword=" + brand.getName();
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteBrand(RedirectAttributes redirectAttributes, @PathVariable int id) {
+        try {
+            brandService.deleteBrandById(id);
+            String brandLogosDir = "../brand-logos/" + id;
+            FileUploadUtil.removeDir(brandLogosDir);
+            redirectAttributes.addFlashAttribute("message", "delete brand #" + id + " successfully!");
+        } catch (BrandNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+        return defaultRedirectURL;
+    }
 }
