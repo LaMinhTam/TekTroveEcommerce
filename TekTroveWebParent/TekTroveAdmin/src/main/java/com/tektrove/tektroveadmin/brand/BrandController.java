@@ -1,14 +1,13 @@
 package com.tektrove.tektroveadmin.brand;
 
+import com.opencsv.CSVWriter;
 import com.tektrove.tektroveadmin.category.CategoryService;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
+import com.tektrove.tektroveadmin.utils.ResponseHeaderUtil;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
-import com.tektrovecommon.entity.Role;
-import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.BrandNotFoundException;
-import com.tektrovecommon.exception.UserNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("brands")
@@ -127,4 +127,28 @@ public class BrandController {
         }
         return defaultRedirectURL;
     }
+
+    @GetMapping("/export/csv")
+    public void exportBrandsCSV(HttpServletResponse response) throws IOException {
+        List<Brand> brands = brandService.listAll();
+
+        ResponseHeaderUtil.setExportReportResponseHeader(response, "text/csv", ".csv", "brands_");
+
+        try (CSVWriter writer = new CSVWriter(response.getWriter())) {
+            writer.writeNext(new String[]{"ID", "Name", "Categories"});
+
+            for (Brand brand : brands) {
+                String categoryNames = brand.getCategories().stream()
+                        .map(Category::getName)
+                        .collect(Collectors.joining(", "));
+
+                writer.writeNext(new String[]{
+                        String.valueOf(brand.getId()),
+                        brand.getName(),
+                        categoryNames
+                });
+            }
+        }
+    }
+
 }
