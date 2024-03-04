@@ -71,8 +71,10 @@
                     &nbsp;
                     <th:block th:replace="~{fragments::edit(${category.id})}"></th:block>
                     &nbsp;
-                    <th:block th:replace="~{fragments::delete(${category.id})}"
-                              th:if="${category.hasChildren}"></th:block>
+                    <th:block th:unless="${category.hasChildren}">
+                        <th:block th:replace="~{fragments::delete(${category.id})}"></th:block>
+                    </th:block>
+
                 </div>
             </div>
             <div>&nbsp;</div>

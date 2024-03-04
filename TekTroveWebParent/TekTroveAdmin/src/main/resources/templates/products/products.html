@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Products')}"></head>
+<body>
+<div th:replace="~{fragments::navbar}"></div>
+<div class="container-fluid">
+    <div>
+        <h1>Manage Products</h1>
+        <a th:href="@{/products/new}" class="fa-solid fa-folder-plus fa-2x"></a>
+        <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/products/export/csv}"></a>
+    </div>
+
+    <form th:replace="~{fragments::search_form}"></form>
+
+    <div th:if="${message != null}" class="alert alert-success text-center" th:text="${message}"></div>
+
+    <div class="full-details">
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('id', 'ID')}"></th:block>
+                </th>
+                <th>Main Image</th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('name', 'Product Name')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('brand', 'Brand')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('category', 'Category')}"></th:block>
+                </th>
+                <th>
+                    Enabled
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product : ${products}">
+                <td th:text="${product.id}"></td>
+                <td>
+                    <!--                    <img th:src="@{${product.mainImage}}" style="width: 100px">-->
+                </td>
+                <td th:text="${product.name}"></td>
+                <td th:text="${product.brand.name}"></td>
+                <td th:text="${product.category.name}"></td>
+                <td>
+                    <th:block th:replace="~{fragments::status(${product.id}, ${product.enabled})}"></th:block>
+                </td>
+                <td>
+                    <a class="fa-solid fa-file-lines fa-2x icon-green"
+                       th:href="@{/products/detail/{id}(id=${product.id})}" th:title="${product.name}"></a>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::edit(${product.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${product.id})}"></th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="product : ${products}" class="row m-1">
+            <div class="col-4">
+                <!--                <img th:src="@{${product.mainImage}}" style="width: 100px">-->
+            </div>
+            <div class="col-8">
+                <div th:text="${product.name}"></div>
+                <div class="mt-2">
+                    <th:block th:replace="~{fragments::status(${product.id}, ${product.enabled})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::edit(${product.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${product.id})}"></th:block>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments::pagination('product')}"></div>
+
+    <div th:replace="~{fragments::footer}"></div>
+
+    <div th:replace="~{modal_fragments::confirmModal}"></div>
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".link-delete").on("click", function (e) {
+            e.preventDefault();
+            showDeleteModal($(this), 'category');
+        })
+    })
+</script>
+
+</body>
+</html>
