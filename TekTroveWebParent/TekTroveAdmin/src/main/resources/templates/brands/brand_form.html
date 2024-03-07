@@ -61,6 +61,8 @@
 </div>
 <script th:src="@{/js/common_form.js}"></script>
 <script>
+    const MAX_FILE_SIZE = 102400;
+
     $(document).ready(function () {
         $('#categorySelect').change(function () {
             $('#chosenCategories').empty();

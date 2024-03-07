@@ -1,18 +1,25 @@
 $(document).ready(function () {
-    $("#fileImage").change(function () {
-        var file = this.files[0];
-        var maxSize = 1024 * 1024;
-
-        if (file.size > maxSize) {
-            this.setCustomValidity('File size exceeds the maximum allowed size (1MB). Please choose a smaller file.');
-            this.reportValidity();
-            $("#thumbnail").attr("src", "");
-        } else {
-            this.setCustomValidity("");
-            showImageThumbnail(this);
+    $("#fileImage").change(function() {
+        if (!checkFileSize(this)) {
+            return;
         }
+        showImageThumbnail(this);
     });
+
 });
+
+function checkFileSize(fileInput){
+    let fileSize = fileInput.files[0].size;
+
+    if (fileSize > MAX_FILE_SIZE) {
+        fileInput.setCustomValidity("You must choose an image less than " + MAX_FILE_SIZE + " bytes");
+        fileInput.reportValidity();
+        return false;
+    } else {
+        fileInput.setCustomValidity("");
+        return true;
+    }
+}
 
 function showImageThumbnail(fileInput) {
     var file = fileInput.files[0];

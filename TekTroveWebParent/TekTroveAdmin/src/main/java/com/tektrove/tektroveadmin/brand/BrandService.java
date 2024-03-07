@@ -53,4 +53,13 @@ public class BrandService {
         Brand existingBrandWithName = brandRepository.findByName(name);
         return existingBrandWithName == null || existingBrandWithName.getId().equals(id);
     }
+
+    public List<Brand> listAllSorted() {
+        Sort sort = Sort.by("name").ascending();
+        return brandRepository.findAll(sort);
+    }
+
+    public Brand get(Integer id) throws BrandNotFoundException {
+        return brandRepository.findById(id).orElseThrow(() -> new BrandNotFoundException("Could not find any brand with ID " + id));
+    }
 }

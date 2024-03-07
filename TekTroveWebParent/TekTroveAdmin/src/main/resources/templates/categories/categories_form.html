@@ -70,6 +70,7 @@
 </div>
 <script th:src="@{/js/common_form.js}"></script>
 <script>
+    const MAX_FILE_SIZE = 102400;
     function isEmailUnique(form) {
         var email = form.email.value;
         var id = form.id.value;

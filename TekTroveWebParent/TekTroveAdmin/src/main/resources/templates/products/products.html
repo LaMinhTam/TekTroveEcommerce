@@ -41,7 +41,7 @@
             <tr th:each="product : ${products}">
                 <td th:text="${product.id}"></td>
                 <td>
-                    <!--                    <img th:src="@{${product.mainImage}}" style="width: 100px">-->
+                    <img th:src="@{${product.mainImagePath}}" style="width: 120px" class="img-fluid">
                 </td>
                 <td th:text="${product.name}"></td>
                 <td th:text="${product.brand.name}"></td>
@@ -65,7 +65,7 @@
     <div class="less-details">
         <div th:each="product : ${products}" class="row m-1">
             <div class="col-4">
-                <!--                <img th:src="@{${product.mainImage}}" style="width: 100px">-->
+                <img th:src="@{${product.mainImagePath}}" style="width: 100px">
             </div>
             <div class="col-8">
                 <div th:text="${product.name}"></div>

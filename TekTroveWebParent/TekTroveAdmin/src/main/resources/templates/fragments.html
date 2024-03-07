@@ -9,6 +9,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
     <script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <th:block th:if="${isAddRichText}">
+        <link rel="stylesheet" th:href="@{/richtext/richtext.min.css}"/>
+        <script type="text/javascript" th:src="@{/richtext/jquery.richtext.min.js}"></script>
+    </th:block>
 </head>
 <body>
 <div th:fragment="navbar">

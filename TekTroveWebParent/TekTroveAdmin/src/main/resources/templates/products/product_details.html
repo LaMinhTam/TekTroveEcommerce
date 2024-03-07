@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="content" th:remove="tag">
+    <div  id="divProductDetails">
+        <div class="form-inline" id="divDetail0">
+            <label class="m-3">Name:</label>
+            <input type="text" class="form-control w-25" name="detailNames" required="required"/>
+            <label class="m-3">Value:</label>
+            <input type="text" class="form-control w-25" name="detailValues" required="required"/>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>

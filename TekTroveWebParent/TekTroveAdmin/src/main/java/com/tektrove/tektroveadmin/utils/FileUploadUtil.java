@@ -5,9 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.stream.Stream;
 
 public class FileUploadUtil {
@@ -20,20 +19,27 @@ public class FileUploadUtil {
             Files.createDirectories(uploadPath);
         }
 
-        Path filePath = uploadPath.resolve(fileName);
-
-        multipartFile.transferTo(filePath);
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException ex) {
+            throw new IOException("Could not save file: " + fileName, ex);
+        }
     }
 
     public static void cleanDir(String dir) {
-        try {
-            Files.walk(Paths.get(dir))
-                    .filter(path -> !Files.isDirectory(path))
-                    .forEach(FileUploadUtil::deleteFile);
-        } catch (IOException e) {
-            LOGGER.error("Error cleaning directory: {}", dir, e);
+        Path directory = Paths.get(dir);
+        if (Files.exists(directory) && Files.isDirectory(directory)) {
+            try {
+                Files.walk(directory)
+                        .filter(path -> !Files.isDirectory(path))
+                        .forEach(FileUploadUtil::deleteFile);
+            } catch (IOException e) {
+                LOGGER.error("Error cleaning directory: {}", dir, e);
+            }
         }
     }
+
 
     private static void deleteFile(Path file) {
         try {

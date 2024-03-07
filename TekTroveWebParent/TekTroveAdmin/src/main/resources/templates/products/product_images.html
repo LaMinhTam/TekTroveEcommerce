@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="content">
+    <div class="row" id="divProductImages">
+        <div class="col border m-3 p-2">
+            <label>Main Image:</label>
+            <div>
+                <img alt="Main image preview" class="img-fluid" id="thumbnail" th:src="@{${product.mainImagePath}}"/>
+            </div>
+            <div>
+                <input accept="image/png, image/jpeg" id="fileImage" name="fileImage" required type="file"/>
+            </div>
+        </div>
+
+        <div class="col border m-3 p-2" id="divExtraImage0">
+            <div id="extraImageHeader0">
+                <label>Extra Image #1</label>
+            </div>
+            <div class="m-2">
+                <img id="extraThumbnail0" alt="Extra thumbnail #1 preview" class="img-fluid" th:src="@{/images/image-thumbnail.png}"/>
+            </div>
+            <div>
+                <input type="file" name="extraImage" accept="image/png, image/jpeg"/>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
