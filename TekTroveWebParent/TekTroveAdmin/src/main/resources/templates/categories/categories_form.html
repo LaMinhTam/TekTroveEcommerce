@@ -5,8 +5,8 @@
 <div class="container-fluid">
     <div th:replace="~{fragments::navbar}"></div>
     <div class="text-center"><h2>Manage Users | [[${pageTitle}]]</h2></div>
-    <form th:action="@{/categories/save}" method="post" style="max-width: 500px; margin: 0 auto"
-          enctype="multipart/form-data" th:object="${category}">
+    <form enctype="multipart/form-data" method="post" onsubmit="return checkUnique(this)"
+          style="max-width: 500px; margin: 0 auto" th:action="@{/categories/save}" th:object="${category}">
         <input type="hidden" th:field="*{id}"/>
         <div class="border border-secondary rounded p-3">
             <div class="form-group row">
@@ -71,28 +71,35 @@
 <script th:src="@{/js/common_form.js}"></script>
 <script>
     const MAX_FILE_SIZE = 102400;
-    function isEmailUnique(form) {
-        var email = form.email.value;
-        var id = form.id.value;
 
-        $.ajax({
-            url: '[[@{/users/checkEmail}]]',
-            type: 'GET',
-            data: {id: id, email: email},
-            success: function (response) {
-                if (response === true) {
-                    form.submit();
-                } else {
-                    showWarningModal('Email is already in use. Please choose a different email.');
-                }
-            },
-            error: function () {
-                showErrorModal('An error occurred while checking the email uniqueness.');
+    function checkUnique(form) {
+        catId = $("#id").val();
+        catName = $("#name").val();
+        catAlias = $("#alias").val();
+
+        csrfValue = $("input[name='_csrf']").val();
+
+        url = "[[@{/categories/check_unique}]]";
+
+        params = {id: catId, name: catName, alias: catAlias, _csrf: csrfValue};
+
+        $.post(url, params, function (response) {
+            if (response === "OK") {
+                form.submit();
+            } else if (response === "DuplicateName") {
+                showWarningModal("There is another category having same name " + catName);
+            } else if (response === "DuplicateAlias") {
+                showWarningModal("There is another category having same alias " + catAlias);
+            } else {
+                showErrorModal("Unknown response from server");
             }
+
+        }).fail(function () {
+            showErrorModal("Could not connect to the server");
         });
+
         return false;
     }
-
 </script>
 
 </body>
