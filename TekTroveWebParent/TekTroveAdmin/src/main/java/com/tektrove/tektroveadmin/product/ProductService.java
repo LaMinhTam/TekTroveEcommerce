@@ -1,6 +1,8 @@
 package com.tektrove.tektroveadmin.product;
 
 import com.tektrovecommon.entity.product.Product;
+import com.tektrovecommon.exception.ProductNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class ProductService {
     private final ProductRepository productRepository;
     private static final int PRODUCT_PER_PAGE = 5;
@@ -53,4 +56,19 @@ public class ProductService {
         return "OK";
     }
 
+    public void updateProductEnabledStatus(Integer id, boolean enabled) {
+        productRepository.updateEnabledStatus(id, enabled);
+    }
+
+    public void deleteProduct(Integer id) throws ProductNotFoundException {
+        int countById = productRepository.countById(id);
+        if (countById == 0) {
+            throw new ProductNotFoundException("Could not find any product with ID " + id);
+        }
+        productRepository.deleteById(id);
+    }
+
+    public Product get(int id) throws ProductNotFoundException {
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Could not find any product with ID " + id));
+    }
 }

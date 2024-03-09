@@ -28,24 +28,20 @@ public class FileUploadUtil {
     }
 
     public static void cleanDir(String dir) {
-        Path directory = Paths.get(dir);
-        if (Files.exists(directory) && Files.isDirectory(directory)) {
-            try {
-                Files.walk(directory)
-                        .filter(path -> !Files.isDirectory(path))
-                        .forEach(FileUploadUtil::deleteFile);
-            } catch (IOException e) {
-                LOGGER.error("Error cleaning directory: {}", dir, e);
-            }
-        }
-    }
+        Path dirPath = Paths.get(dir);
 
-
-    private static void deleteFile(Path file) {
         try {
-            Files.delete(file);
-        } catch (IOException e) {
-            LOGGER.error("Failed to delete file: " + file, e);
+            Files.list(dirPath).forEach(file -> {
+                if (!Files.isDirectory(file)) {
+                    try {
+                        Files.delete(file);
+                    } catch (IOException ex) {
+                        LOGGER.error("Could not delete file: " + file);
+                    }
+                }
+            });
+        } catch (IOException ex) {
+            LOGGER.error("Could not list directory: " + dirPath);
         }
     }
 
@@ -55,7 +51,8 @@ public class FileUploadUtil {
         try {
             Files.delete(Paths.get(dir));
         } catch (IOException e) {
-            LOGGER.error("Error removing directory: {}", dir, e);
+            LOGGER.error("Could not remove directory: " + dir);
         }
+
     }
 }

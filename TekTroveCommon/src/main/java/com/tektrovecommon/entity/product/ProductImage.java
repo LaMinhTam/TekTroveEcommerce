@@ -1,10 +1,7 @@
 package com.tektrovecommon.entity.product;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "product_images")
@@ -21,4 +18,14 @@ public class ProductImage {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    @Transient
+    public String getImagePath() {
+        return "/product-images/" + product.getId() + "/extras/" + name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

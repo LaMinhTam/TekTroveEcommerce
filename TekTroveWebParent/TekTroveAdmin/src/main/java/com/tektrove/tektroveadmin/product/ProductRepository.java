@@ -4,6 +4,7 @@ import com.tektrovecommon.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
@@ -17,4 +18,10 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Product findByName(String name);
 
     Product findByAlias(String alias);
+
+    @Modifying
+    @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")
+    void updateEnabledStatus(Integer id, boolean enabled);
+
+    int countById(Integer id);
 }

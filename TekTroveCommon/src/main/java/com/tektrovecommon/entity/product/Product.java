@@ -53,8 +53,8 @@ public class Product {
         this.images.add(ProductImage.builder().name(imageName).product(this).build());
     }
 
-    public void addDetail(String name, String value) {
-        this.details.add(new ProductDetail(name, value, this));
+    public void addDetail(ProductDetail productDetail) {
+        this.details.add(productDetail);
     }
 
     public void addDetail(Integer id, String name, String value) {
@@ -80,5 +80,9 @@ public class Product {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public boolean containsImageName(String fileName) {
+        return images.stream().anyMatch(productImage -> productImage.getName().equals(fileName));
     }
 }

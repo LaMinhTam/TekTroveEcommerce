@@ -4,6 +4,11 @@ import com.tektrove.tektroveadmin.brand.BrandService;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.product.Product;
+import com.tektrovecommon.entity.product.ProductDetail;
+import com.tektrovecommon.entity.product.ProductImage;
+import com.tektrovecommon.exception.ProductNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/products")
@@ -21,6 +31,7 @@ public class ProductController {
     private final ProductService productService;
     private final BrandService brandService;
     private final String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=asc&keyword=";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     public ProductController(ProductService productService, BrandService brandService) {
         this.productService = productService;
@@ -75,14 +86,19 @@ public class ProductController {
     public String saveProduct(Product product,
                               MultipartFile fileImage,
                               MultipartFile[] extraImage,
+                              String[] detailIDs,
                               String[] detailNames,
                               String[] detailValues,
+                              String[] imageIDs,
+                              String[] imageNames,
                               RedirectAttributes redirectAttributes) throws IOException {
         setMainImageName(fileImage, product);
-        setExtraImageNames(extraImage, product);
-        setProductDetails(detailNames, detailValues, product);
+        setExistingExtraImage(imageIDs, imageNames, product);
+        setNewExtraImageNames(extraImage, product);
+        setProductDetails(detailIDs, detailNames, detailValues, product);
         Product savedProduct = productService.save(product);
         saveUploadedImages(fileImage, extraImage, savedProduct);
+        deleteExTraImagesRemovedOnForm(product);
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully.");
         return defaultRedirectURL;
     }
@@ -94,10 +110,25 @@ public class ProductController {
         }
     }
 
-    private void setExtraImageNames(MultipartFile[] extraImage, Product product) {
+    private void setExistingExtraImage(String[] imageIDs, String[] imageNames, Product product) {
+        if (imageNames == null || imageIDs.length == 0) return;
+        Set<ProductImage> images = new HashSet<>();
+        for (int i = 0; i < imageIDs.length; i++) {
+            int id = Integer.parseInt(imageIDs[i]);
+            String name = imageNames[i];
+            images.add(new ProductImage(id, name, product));
+        }
+        product.setImages(images);
+    }
+
+    private void setNewExtraImageNames(MultipartFile[] extraImage, Product product) {
         for (MultipartFile file : extraImage) {
-            String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-            product.addExtraImage(fileName);
+            if (!file.isEmpty()) {
+                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                if (product.containsImageName(fileName)) {
+                    product.addExtraImage(fileName);
+                }
+            }
         }
     }
 
@@ -111,21 +142,86 @@ public class ProductController {
         if (extraImage.length > 0) {
             String uploadDir = "../product-images/" + product.getId() + "/extras";
             for (MultipartFile file : extraImage) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                FileUploadUtil.cleanDir(uploadDir);
-                FileUploadUtil.saveFile(uploadDir, fileName, file);
+                if (!file.isEmpty()) {
+                    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                    FileUploadUtil.saveFile(uploadDir, fileName, file);
+                }
             }
         }
     }
 
-    private void setProductDetails(String[] detailNames, String[] detailValues, Product product) {
+    private void setProductDetails(String[] detailIDs, String[] detailNames, String[] detailValues, Product product) {
         int numberOfDetails = detailNames.length;
         for (int i = 0; i < numberOfDetails; i++) {
+            int id = Integer.parseInt(detailIDs[i]);
             String name = detailNames[i];
             String value = detailValues[i];
             if (!name.isEmpty() && !value.isEmpty()) {
-                product.addDetail(name, value);
+                ProductDetail productDetail = (id != 0 ?
+                        new ProductDetail(id, name, value, product) :
+                        new ProductDetail(name, value, product));
+                product.addDetail(productDetail);
             }
+        }
+    }
+
+    private void deleteExTraImagesRemovedOnForm(Product product) {
+        String extraImageDir = "../product-images/" + product.getId() + "/extras";
+        Path dirPath = Paths.get(extraImageDir);
+        try {
+            Files.list(dirPath).forEach(file -> {
+                String fileName = file.toFile().getName();
+                if (!product.containsImageName(fileName)) {
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        LOGGER.error("Could not delete file: " + fileName);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            LOGGER.error("Could not list directory: " + dirPath);
+        }
+    }
+
+    @GetMapping("/{id}/enabled/{status}")
+    public String updateCategoryEnabledStatus(@PathVariable("id") Integer id, @PathVariable("status") boolean enabled, RedirectAttributes redirectAttributes) {
+        productService.updateProductEnabledStatus(id, enabled);
+        String status = enabled ? "enabled" : "disabled";
+        String message = "The product ID " + id + " has been " + status;
+        redirectAttributes.addFlashAttribute("message", message);
+        return defaultRedirectURL;
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        try {
+            productService.deleteProduct(id);
+            String productDir = "../product-images/" + id;
+            String productExtraDir = "../product-images/" + id + "/extras";
+            FileUploadUtil.removeDir(productDir);
+            FileUploadUtil.removeDir(productExtraDir);
+            redirectAttributes.addFlashAttribute("message", "The product ID " + id + " has been deleted successfully.");
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+        return defaultRedirectURL;
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editProduct(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+        try {
+            Product product = productService.get(id);
+            List<Brand> brands = brandService.listAllSorted();
+            model.addAttribute("product", product);
+            model.addAttribute("pageTitle", "Edit Product (ID: " + id + ")");
+            model.addAttribute("brands", brands);
+            model.addAttribute("isAddRichText", true);
+
+            return "products/products_form";
+        } catch (ProductNotFoundException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+            return defaultRedirectURL;
         }
     }
 }

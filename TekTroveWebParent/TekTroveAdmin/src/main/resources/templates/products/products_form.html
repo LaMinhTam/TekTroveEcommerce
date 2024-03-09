@@ -41,7 +41,8 @@
             </div>
             <div class="tab-pane p-3" id="details" role="tabpanel">
                 <div th:replace="~{products/product_details::content}"></div>
-                <input type="button" class="btn btn-secondary" value="Add More Detail" onclick="addNextDetailSection()"/>
+                <input type="button" class="btn btn-secondary" value="Add More Detail"
+                       onclick="addNextDetailSection()"/>
             </div>
             <div class="tab-pane p-3" id="shipping" role="tabpanel">
                 <div th:replace="~{products/product_shipping::content}"></div>
@@ -78,8 +79,16 @@
             dropDownCategory.empty();
             getCategories();
         });
-        getCategories();
+
+        getCategoriesForNewForm();
     })
+
+    function getCategoriesForNewForm() {
+        const categoryId = $("#id").val();
+        if (categoryId === null) {
+            getCategories();
+        }
+    }
 
     function getCategories() {
         const brandId = dropDownBrand.val();

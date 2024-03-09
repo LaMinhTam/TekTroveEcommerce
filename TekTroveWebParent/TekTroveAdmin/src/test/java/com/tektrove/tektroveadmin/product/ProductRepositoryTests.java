@@ -3,6 +3,7 @@ package com.tektrove.tektroveadmin.product;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
+import com.tektrovecommon.entity.product.ProductDetail;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -101,10 +102,11 @@ public class ProductRepositoryTests {
         Integer productId = 1;
         Product product = productRepository.findById(productId).get();
 
-        product.addDetail("Display", "Super AMOLED");
-        product.addDetail("OS", "Android 11");
-        product.addDetail("RAM", "8GB");
-        product.addDetail("Storage", "128GB");
+
+        product.addDetail(new ProductDetail("Display", "Super AMOLED", product));
+        product.addDetail(new ProductDetail("OS", "Android 11", product));
+        product.addDetail(new ProductDetail("RAM", "8GB", product));
+        product.addDetail(new ProductDetail("Storage", "128GB", product));
 
         Product savedProduct = productRepository.save(product);
         assertThat(savedProduct.getDetails()).isNotEmpty();
