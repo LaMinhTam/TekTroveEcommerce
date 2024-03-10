@@ -1,11 +1,16 @@
 package com.tektrovecommon.entity;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Data
 @Builder
-public class User {
+public class User implements Exportable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -45,7 +50,7 @@ public class User {
         this.password = password;
     }
 
-    public void addRole(Role role){
+    public void addRole(Role role) {
         this.roles.add(role);
     }
 
@@ -57,7 +62,7 @@ public class User {
     }
 
     @Transient
-    public String getFullName(){
+    public String getFullName() {
         return firstName + " " + lastName;
     }
 
@@ -71,5 +76,41 @@ public class User {
             rolesAsString.append(role.getName());
         }
         return rolesAsString.toString();
+    }
+
+    @Override
+    public String[] getCsvExportData() {
+        return new String[]{
+                String.valueOf(this.id),
+                this.email,
+                String.valueOf(this.enabled),
+                this.firstName,
+                this.lastName,
+                this.getRolesAsString()
+        };
+    }
+
+    @Override
+    public Row getExcelExportRow(Sheet sheet, int rowNum) {
+        Row row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue(this.id);
+        row.createCell(1).setCellValue(this.email);
+        row.createCell(2).setCellValue(this.enabled);
+        row.createCell(3).setCellValue(this.firstName);
+        row.createCell(4).setCellValue(this.lastName);
+        row.createCell(5).setCellValue(this.getRolesAsString());
+        return row;
+    }
+
+
+    @Override
+    public PdfPTable getPdfExportTable(PdfPTable table) throws IOException, DocumentException {
+        table.addCell(String.valueOf(this.id));
+        table.addCell(this.email);
+        table.addCell(this.enabled ? "Enabled" : "Disabled");
+        table.addCell(this.firstName);
+        table.addCell(this.lastName);
+        table.addCell(this.getRolesAsString());
+        return table;
     }
 }

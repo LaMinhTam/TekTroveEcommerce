@@ -1,11 +1,16 @@
 package com.tektrovecommon.entity.product;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.Exportable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
+import java.io.IOException;
 import java.util.*;
 
 @Entity
@@ -88,7 +93,7 @@ public class Product implements Exportable {
     }
 
     @Override
-    public String[] getExportData() {
+    public String[] getCsvExportData() {
         return new String[]{
                 String.valueOf(this.id),
                 this.name,
@@ -103,5 +108,15 @@ public class Product implements Exportable {
                 String.valueOf(this.height),
                 String.valueOf(this.weight),
         };
+    }
+
+    @Override
+    public Row getExcelExportRow(Sheet sheet, int rowNum) {
+        return null;
+    }
+
+    @Override
+    public PdfPTable getPdfExportTable(PdfPTable table) throws IOException, DocumentException {
+        return null;
     }
 }

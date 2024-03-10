@@ -1,6 +1,8 @@
 package com.tektrove.tektroveadmin.category;
 
+import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
+import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.exception.CategoryNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -133,6 +135,7 @@ public class CategoryController {
     @GetMapping("/export/csv")
     public void exportCSV(HttpServletResponse response) throws IOException {
         List<Category> categories = categoryService.getCategoriesUsedInForm();
-        CategoryExporter.exportCSV(categories, response);
+        String[] headers = {"ID", "Name"};
+        ExporterUtil.exportToCsv(categories, headers, response);
     }
 }

@@ -1,6 +1,7 @@
 package com.tektrove.tektroveadmin.user;
 
 import com.itextpdf.text.DocumentException;
+import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Role;
 import com.tektrovecommon.entity.User;
@@ -139,18 +140,21 @@ public class UserController {
     @GetMapping("/export/csv")
     public void exportCSV(HttpServletResponse response) throws IOException {
         List<User> users = userService.listAll();
-        UserExporter.exportCSV(users, response);
+        String[] headers = {"ID", "Email", "Enabled", "First Name", "Last Name", "Roles"};
+        ExporterUtil.exportToCsv(users, headers, response);
     }
 
     @GetMapping("/export/excel")
     public void exportExcel(HttpServletResponse response) throws IOException {
         List<User> users = userService.listAll();
-        UserExporter.exportExcel(users, response);
+        String[] headers = {"ID", "Email", "Enabled", "First Name", "Last Name", "Roles"};
+        ExporterUtil.exportToExcel(users, headers, response);
     }
 
     @GetMapping("/export/pdf")
     public void exportPdf(HttpServletResponse response) throws IOException, DocumentException {
         List<User> users = userService.listAll();
-        UserExporter.exportPdf(users, response);
+        String[] headers = {"ID", "Email", "Enabled", "First Name", "Last Name", "Roles"};
+        ExporterUtil.exportToPdf(users, headers, response);
     }
 }

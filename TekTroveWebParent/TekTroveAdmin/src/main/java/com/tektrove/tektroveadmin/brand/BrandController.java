@@ -2,10 +2,12 @@ package com.tektrove.tektroveadmin.brand;
 
 import com.opencsv.CSVWriter;
 import com.tektrove.tektroveadmin.category.CategoryService;
+import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrove.tektroveadmin.utils.ResponseHeaderUtil;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
+import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.exception.BrandNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
@@ -131,24 +133,8 @@ public class BrandController {
     @GetMapping("/export/csv")
     public void exportBrandsCSV(HttpServletResponse response) throws IOException {
         List<Brand> brands = brandService.listAll();
-
-        ResponseHeaderUtil.setExportReportResponseHeader(response, "text/csv", ".csv", "brands_");
-
-        try (CSVWriter writer = new CSVWriter(response.getWriter())) {
-            writer.writeNext(new String[]{"ID", "Name", "Categories"});
-
-            for (Brand brand : brands) {
-                String categoryNames = brand.getCategories().stream()
-                        .map(Category::getName)
-                        .collect(Collectors.joining(", "));
-
-                writer.writeNext(new String[]{
-                        String.valueOf(brand.getId()),
-                        brand.getName(),
-                        categoryNames
-                });
-            }
-        }
+        String[] headers = {"ID", "Name", "Categories"};
+        ExporterUtil.exportToCsv(brands, headers, response);
     }
 
 }

@@ -1,11 +1,16 @@
 package com.tektrovecommon.entity;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
-import java.io.Serializable;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "brands")
@@ -13,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Brand  {
+public class Brand  implements Exportable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -47,4 +52,27 @@ public class Brand  {
                 ", logo='" + logo + '\'' +
                 '}';
     }
+
+    @Override
+    public String[] getCsvExportData() {
+        String categoryNames = this.categories.stream()
+                .map(Category::getName)
+                .collect(Collectors.joining(", "));
+        return new String[]{
+                String.valueOf(this.id),
+                this.name,
+                categoryNames
+        };
+    }
+
+    @Override
+    public Row getExcelExportRow(Sheet sheet, int rowNum) {
+        return null;
+    }
+
+    @Override
+    public PdfPTable getPdfExportTable(PdfPTable table) throws IOException, DocumentException {
+        return null;
+    }
+
 }

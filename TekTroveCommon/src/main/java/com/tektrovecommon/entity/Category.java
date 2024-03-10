@@ -1,8 +1,13 @@
 package com.tektrovecommon.entity;
 
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.pdf.PdfPTable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -13,8 +18,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@ToString(exclude = {"parent","children"})
-public class Category {
+@ToString(exclude = {"parent", "children"})
+public class Category implements Exportable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -67,5 +72,23 @@ public class Category {
         if (this.id == null) return "/images/image-thumbnail.png";
 
         return "/categories-images/" + this.id + "/" + this.image;
+    }
+
+    @Override
+    public String[] getCsvExportData() {
+        return new String[]{
+                String.valueOf(this.id),
+                this.name.replace("--", "  ")
+        };
+    }
+
+    @Override
+    public Row getExcelExportRow(Sheet sheet, int rowNum) {
+        return null;
+    }
+
+    @Override
+    public PdfPTable getPdfExportTable(PdfPTable table) throws IOException, DocumentException {
+        return null;
     }
 }
