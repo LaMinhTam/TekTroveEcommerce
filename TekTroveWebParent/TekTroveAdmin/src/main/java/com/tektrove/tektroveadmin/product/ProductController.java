@@ -1,12 +1,14 @@
 package com.tektrove.tektroveadmin.product;
 
 import com.tektrove.tektroveadmin.brand.BrandService;
+import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.entity.product.ProductDetail;
 import com.tektrovecommon.entity.product.ProductImage;
 import com.tektrovecommon.exception.ProductNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -235,5 +237,12 @@ public class ProductController {
             redirectAttributes.addFlashAttribute("message", e.getMessage());
             return defaultRedirectURL;
         }
+    }
+
+    @GetMapping("/export/csv")
+    public void exportToCSV(HttpServletResponse response) throws IOException {
+        List<Product> products = productService.listAll();
+        String[] headers = {"ID", "Name", "Alias", "Category", "Brand", "Cost", "Price", "Discount Percent", "Length", "Width", "Height", "Weight"};
+        ExporterUtil.exportToCsv(products, headers, response);
     }
 }

@@ -2,6 +2,7 @@ package com.tektrovecommon.entity.product;
 
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
+import com.tektrovecommon.entity.Exportable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Product {
+public class Product implements Exportable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -84,5 +85,23 @@ public class Product {
 
     public boolean containsImageName(String fileName) {
         return images.stream().anyMatch(productImage -> productImage.getName().equals(fileName));
+    }
+
+    @Override
+    public String[] getExportData() {
+        return new String[]{
+                String.valueOf(this.id),
+                this.name,
+                this.alias,
+                this.category.getName(),
+                this.brand.getName(),
+                String.valueOf(this.cost),
+                String.valueOf(this.price),
+                String.valueOf(this.discountPercent),
+                String.valueOf(this.length),
+                String.valueOf(this.width),
+                String.valueOf(this.height),
+                String.valueOf(this.weight),
+        };
     }
 }
