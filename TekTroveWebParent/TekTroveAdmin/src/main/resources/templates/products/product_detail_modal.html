@@ -1,0 +1,48 @@
+<div class="modal-header">
+    <h4 class="modal-title" id="modalTitle">Warning</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+</div>
+
+<div>
+    <ul class="nav nav-tabs nav-pills" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="overviews-tab" data-toggle="tab" href="#overviews"
+               role="tab">Overviews</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="description-tab" data-toggle="tab" href="#description"
+               role="tab">Description</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="images-tab" data-toggle="tab" href="#images" role="tab">Images</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="details-tab" data-toggle="tab" href="#details" role="tab">Details</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="shipping-tab" data-toggle="tab" href="#shipping" role="tab">Shipping</a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active p-3" id="overviews" role="tabpanel">
+            <th:block th:replace="~{products/product_overview_read_only}"></th:block>
+        </div>
+        <div class="tab-pane" id="description" role="tabpanel">
+            <div th:replace="~{products/product_description_read_only::content}"></div>
+        </div>
+        <div class="tab-pane" id="images" role="tabpanel">
+            <div th:replace="~{products/product_images_read_only::content}"></div>
+        </div>
+        <div class="tab-pane p-3" id="details" role="tabpanel">
+            <div th:replace="~{products/product_details_read_only::content}"></div>
+        </div>
+        <div class="tab-pane p-3" id="shipping" role="tabpanel">
+            <div th:replace="~{products/product_shipping_read_only::content}"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
