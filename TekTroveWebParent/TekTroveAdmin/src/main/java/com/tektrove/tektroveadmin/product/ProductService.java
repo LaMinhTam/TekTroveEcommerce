@@ -26,11 +26,11 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Page<Product> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
+    public Page<Product> listByPage(int pageNum, String sortField, String sortDir, String keyword, String categoryId) {
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE, sort);
-        return keyword != null ? productRepository.findAll(keyword, pageable) : productRepository.findAll(pageable);
+        return categoryId == null || Integer.parseInt(categoryId) == 0 ? productRepository.findAll(keyword, pageable) : productRepository.findByCategoryIdAndKeyword("-" + categoryId + "-", keyword, pageable);
     }
 
     public Product save(Product product) {

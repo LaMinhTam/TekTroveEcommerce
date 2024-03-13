@@ -35,7 +35,8 @@ public class Category implements Exportable {
     private Category parent;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<Category> children = new HashSet<>();
-
+    @Column(name = "all_parent_ids", length = 256)
+    private String allParentIDs;
     public static Category copyCategory(Category category) {
         Category copyCategory = new Category();
         copyCategory.setId(category.getId());

@@ -15,9 +15,15 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             + " OR p.category.name LIKE %?1%")
     Page<Product> findAll(String keyword, Pageable pageable);
 
-    Product findByName(String name);
+    @Query("SELECT p FROM Product p WHERE "
+            + "concat(p.category.allParentIDs, p.category.id, '-') LIKE %?1%"
+            + " AND (p.name LIKE %?2%"
+            + " OR p.shortDescription LIKE %?2%"
+            + " OR p.fullDescription LIKE %?2%"
+            + " OR p.brand.name LIKE %?2%)")
+    Page<Product> findByCategoryIdAndKeyword(String categoryId, String keyword,Pageable pageable);
 
-    Product findByAlias(String alias);
+    Product findByName(String name);
 
     @Modifying
     @Query("UPDATE Product p SET p.enabled = ?2 WHERE p.id = ?1")

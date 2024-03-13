@@ -1,9 +1,11 @@
 package com.tektrove.tektroveadmin.product;
 
 import com.tektrove.tektroveadmin.brand.BrandService;
+import com.tektrove.tektroveadmin.category.CategoryService;
 import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Brand;
+import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.entity.product.ProductDetail;
 import com.tektrovecommon.entity.product.ProductImage;
@@ -32,12 +34,14 @@ import java.util.Set;
 public class ProductController {
     private final ProductService productService;
     private final BrandService brandService;
-    private final String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=asc&keyword=";
+    private final CategoryService categoryService;
+    private final String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=asc&keyword=&categoryId=0";
     private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
-    public ProductController(ProductService productService, BrandService brandService) {
+    public ProductController(ProductService productService, BrandService brandService, CategoryService categoryService) {
         this.productService = productService;
         this.brandService = brandService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -46,8 +50,8 @@ public class ProductController {
     }
 
     @GetMapping("/page/{pageNum}")
-    public String findByPage(Model model, @PathVariable int pageNum, String sortField, String sortDir, String keyword) {
-        Page<Product> products = productService.listByPage(pageNum, sortField, sortDir, keyword);
+    public String findByPage(Model model, @PathVariable int pageNum, String sortField, String sortDir, String keyword, String categoryId) {
+        Page<Product> products = productService.listByPage(pageNum, sortField, sortDir, keyword, categoryId);
         model.addAttribute("products", products.getContent());
 
         model.addAttribute("sortField", sortField);
@@ -69,7 +73,9 @@ public class ProductController {
         model.addAttribute("startCount", startCount);
         model.addAttribute("endCount", endCount);
         model.addAttribute("totalItems", products.getTotalElements());
-
+        model.addAttribute("categoryId", categoryId);
+        List<Category> categories = categoryService.getCategoriesUsedInForm();
+        model.addAttribute("categories", categories);
         return "products/products";
     }
 

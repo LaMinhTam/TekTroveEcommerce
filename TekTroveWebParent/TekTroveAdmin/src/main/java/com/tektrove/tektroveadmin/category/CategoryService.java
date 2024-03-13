@@ -130,6 +130,13 @@ public class CategoryService {
     }
 
     public Category save(Category category) {
+        Category parent = category.getParent();
+        //set category parent ids: like 1-2-3-4
+        if (parent != null) {
+            String parentIds = parent.getAllParentIDs() == null ? "-" : parent.getAllParentIDs();
+            parentIds += parent.getId() + "-";
+            category.setAllParentIDs(parentIds);
+        }
         return categoryRepository.save(category);
     }
 }
