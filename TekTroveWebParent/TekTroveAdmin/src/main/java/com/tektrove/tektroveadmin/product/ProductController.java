@@ -2,32 +2,27 @@ package com.tektrove.tektroveadmin.product;
 
 import com.tektrove.tektroveadmin.brand.BrandService;
 import com.tektrove.tektroveadmin.category.CategoryService;
+import com.tektrove.tektroveadmin.security.TekTroveUserDetails;
 import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
-import com.tektrovecommon.entity.product.ProductDetail;
-import com.tektrovecommon.entity.product.ProductImage;
 import com.tektrovecommon.exception.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/products")
@@ -36,7 +31,6 @@ public class ProductController {
     private final BrandService brandService;
     private final CategoryService categoryService;
     private final String defaultRedirectURL = "redirect:/products/page/1?sortField=name&sortDir=asc&keyword=&categoryId=0";
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
 
     public ProductController(ProductService productService, BrandService brandService, CategoryService categoryService) {
         this.productService = productService;
@@ -45,7 +39,7 @@ public class ProductController {
     }
 
     @GetMapping
-    public String listAll(Model model) {
+    public String listAll() {
         return defaultRedirectURL;
     }
 
@@ -91,7 +85,8 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String saveProduct(Product product,
+    public String saveProduct(@AuthenticationPrincipal TekTroveUserDetails loggedUser,
+                              Product product,
                               MultipartFile fileImage,
                               MultipartFile[] extraImage,
                               String[] detailIDs,
@@ -100,96 +95,20 @@ public class ProductController {
                               String[] imageIDs,
                               String[] imageNames,
                               RedirectAttributes redirectAttributes) throws IOException {
-        setMainImageName(fileImage, product);
-        setExistingExtraImage(imageIDs, imageNames, product);
-        setNewExtraImageNames(extraImage, product);
-        setProductDetails(detailIDs, detailNames, detailValues, product);
+        if (loggedUser.hasRole("Salesperson")) {
+            productService.updateProductPricingInformation(product);
+            redirectAttributes.addFlashAttribute("message", "The product has been saved successfully.");
+            return defaultRedirectURL;
+        }
+        ProductSaveHelper.setMainImageName(fileImage, product);
+        ProductSaveHelper.setExistingExtraImage(imageIDs, imageNames, product);
+        ProductSaveHelper.setNewExtraImageNames(extraImage, product);
+        ProductSaveHelper.setProductDetails(detailIDs, detailNames, detailValues, product);
         Product savedProduct = productService.save(product);
-        saveUploadedImages(fileImage, extraImage, savedProduct);
-        deleteExTraImagesRemovedOnForm(product);
+        ProductSaveHelper.saveUploadedImages(fileImage, extraImage, savedProduct);
+        ProductSaveHelper.deleteExTraImagesRemovedOnForm(product);
         redirectAttributes.addFlashAttribute("message", "The product has been saved successfully.");
         return defaultRedirectURL;
-    }
-
-    private void setMainImageName(MultipartFile fileImage, Product product) {
-        if (!fileImage.isEmpty()) {
-            String fileName = StringUtils.cleanPath(fileImage.getOriginalFilename());
-            product.setMainImage(fileName);
-        }
-    }
-
-    private void setExistingExtraImage(String[] imageIDs, String[] imageNames, Product product) {
-        if (imageNames == null || imageIDs.length == 0) return;
-        Set<ProductImage> images = new HashSet<>();
-        for (int i = 0; i < imageIDs.length; i++) {
-            int id = Integer.parseInt(imageIDs[i]);
-            String name = imageNames[i];
-            images.add(new ProductImage(id, name, product));
-        }
-        product.setImages(images);
-    }
-
-    private void setNewExtraImageNames(MultipartFile[] extraImage, Product product) {
-        for (MultipartFile file : extraImage) {
-            if (!file.isEmpty()) {
-                String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                if (product.containsImageName(fileName)) {
-                    product.addExtraImage(fileName);
-                }
-            }
-        }
-    }
-
-    private void saveUploadedImages(MultipartFile mainImage, MultipartFile[] extraImage, Product product) throws IOException {
-        if (!mainImage.isEmpty()) {
-            String fileName = StringUtils.cleanPath(mainImage.getOriginalFilename());
-            String uploadDir = "../product-images/" + product.getId();
-            FileUploadUtil.cleanDir(uploadDir);
-            FileUploadUtil.saveFile(uploadDir, fileName, mainImage);
-        }
-        if (extraImage.length > 0) {
-            String uploadDir = "../product-images/" + product.getId() + "/extras";
-            for (MultipartFile file : extraImage) {
-                if (!file.isEmpty()) {
-                    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                    FileUploadUtil.saveFile(uploadDir, fileName, file);
-                }
-            }
-        }
-    }
-
-    private void setProductDetails(String[] detailIDs, String[] detailNames, String[] detailValues, Product product) {
-        int numberOfDetails = detailNames.length;
-        for (int i = 0; i < numberOfDetails; i++) {
-            int id = Integer.parseInt(detailIDs[i]);
-            String name = detailNames[i];
-            String value = detailValues[i];
-            if (!name.isEmpty() && !value.isEmpty()) {
-                ProductDetail productDetail = (id != 0 ?
-                        new ProductDetail(id, name, value, product) :
-                        new ProductDetail(name, value, product));
-                product.addDetail(productDetail);
-            }
-        }
-    }
-
-    private void deleteExTraImagesRemovedOnForm(Product product) {
-        String extraImageDir = "../product-images/" + product.getId() + "/extras";
-        Path dirPath = Paths.get(extraImageDir);
-        try {
-            Files.list(dirPath).forEach(file -> {
-                String fileName = file.toFile().getName();
-                if (!product.containsImageName(fileName)) {
-                    try {
-                        Files.delete(file);
-                    } catch (IOException e) {
-                        LOGGER.error("Could not delete file: " + fileName);
-                    }
-                }
-            });
-        } catch (IOException e) {
-            LOGGER.error("Could not list directory: " + dirPath);
-        }
     }
 
     @GetMapping("/{id}/enabled/{status}")

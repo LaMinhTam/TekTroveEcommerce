@@ -113,4 +113,13 @@ public class User implements Exportable {
         table.addCell(this.getRolesAsString());
         return table;
     }
+
+    public boolean hasRole(String roleName) {
+        for (Role role : roles) {
+            if (role.getName().equals(roleName)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

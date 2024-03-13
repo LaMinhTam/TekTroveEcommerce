@@ -16,7 +16,7 @@
             </div>
         </th:block>
 
-        <div class="form-inline" th:id="'divDetail' + ${#lists.size(product.details)}">
+        <div class="form-inline" th:id="'divDetail' + ${product.details != null ? #lists.size(product.details) : 0}">
             <input type="hidden" name="detailIDs" value="0"/>
             <label class="m-3">Name:</label>
             <input type="text" class="form-control w-25" name="detailNames"/>

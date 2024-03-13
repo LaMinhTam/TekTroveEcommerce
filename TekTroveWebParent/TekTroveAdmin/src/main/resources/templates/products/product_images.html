@@ -33,13 +33,13 @@
             </div>
         </th:block>
 
-        <div class="col border m-3 p-2" th:id="'divExtraImage' + ${#lists.size(product.images)}">
-            <div th:id="'extraImageHeader' + ${#lists.size(product.images)}">
-                <label>Extra Image #[[${#lists.size(product.images)}]]</label>
+        <div class="col border m-3 p-2" th:id="'divExtraImage' + ${imageCount}" th:with="imageCount=${product.images != null ? #lists.size(product.images) : 0}">
+            <div th:id="'extraImageHeader' + ${imageCount}">
+                <label>Extra Image #[[${imageCount + 1}]]</label>
             </div>
             <div class="m-2">
-                <img th:id="'extraThumbnail' + ${#lists.size(product.images)}"
-                     th:alt="'Extra thumbnail #' + ${#lists.size(product.images)} + ' preview'" class="img-fluid"
+                <img th:id="'extraThumbnail' + ${imageCount}"
+                     th:alt="'Extra thumbnail #' + ${imageCount + 1} + ' preview'" class="img-fluid"
                      th:src="@{/images/image-thumbnail.png}"/>
             </div>
             <div>

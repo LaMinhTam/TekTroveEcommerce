@@ -1,22 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="~{fragments::page_header('Products')}"></head>
 <body>
 <div th:replace="~{fragments::navbar}"></div>
 <div class="container-fluid">
     <div>
         <h1>Manage Products</h1>
-        <a th:href="@{/products/new}" class="fa-solid fa-folder-plus fa-2x"></a>
-        <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/products/export/csv}"></a>
+        <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+            <a th:href="@{/products/new}" class="fa-solid fa-folder-plus fa-2x"></a>
+            <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/products/export/csv}"></a>
+        </th:block>
     </div>
 
     <form th:action="@{/{moduleUrl}/page/1(moduleUrl=${moduleUrl})}" class="form-inline my-3">
         <div class="mr-2">
             Category:
             <select name="categoryId" class="form-control">
+                <option value="0">All</option>
                 <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
                         th:selected="${categoryId} == ${category.id}"></option>
-                <option value="0">All</option>
             </select>
         </div>
 
@@ -57,9 +60,11 @@
                 <th>
                     <th:block th:replace="~{fragments::sort_link('category', 'Category')}"></th:block>
                 </th>
-                <th>
-                    Enabled
-                </th>
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <th>
+                        Enabled
+                    </th>
+                </th:block>
                 <th></th>
             </tr>
             </thead>
@@ -69,19 +74,25 @@
                 <td>
                     <img th:src="@{${product.mainImagePath}}" style="width: 120px" class="img-fluid">
                 </td>
-                <td th:text="${product.name}"></td>
+                <td><a class="link-detail" th:text="${product.name}" th:href="@{/products/detail/{id}(id=${product.id})}"></a></td>
                 <td th:text="${product.brand.name}"></td>
                 <td th:text="${product.category.name}"></td>
-                <td>
-                    <th:block th:replace="~{fragments::status(${product.id}, ${product.enabled})}"></th:block>
-                </td>
+                <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                    <td>
+                        <th:block th:replace="~{fragments::status(${product.id}, ${product.enabled})}"></th:block>
+                    </td>
+                </th:block>
                 <td>
                     <a class="fa-solid fa-file-lines fa-2x icon-green link-detail"
                        th:href="@{/products/detail/{id}(id=${product.id})}" th:title="${product.name}"></a>
-                    &nbsp;
-                    <th:block th:replace="~{fragments::edit(${product.id})}"></th:block>
-                    &nbsp;
-                    <th:block th:replace="~{fragments::delete(${product.id})}"></th:block>
+                    <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')">
+                        &nbsp;
+                        <th:block th:replace="~{fragments::edit(${product.id})}"></th:block>
+                    </th:block>
+                    <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor')">
+                        &nbsp;
+                        <th:block th:replace="~{fragments::delete(${product.id})}"></th:block>
+                    </th:block>
                 </td>
             </tr>
             </tbody>

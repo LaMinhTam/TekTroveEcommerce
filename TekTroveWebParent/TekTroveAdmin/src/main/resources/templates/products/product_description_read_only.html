@@ -4,12 +4,12 @@
 <th:block th:fragment="content" th:object="${product}">
     <div class="m-2">
         <label>Short Description:</label>
-        <div class="form-control" th:utext="*{shortDescription}"></div>
+        <div class="border p-2" th:utext="*{shortDescription}"></div>
     </div>
 
     <div class="m-2">
         <label>Full Description:</label>
-        <div class="form-control" th:utext="*{fullDescription}"></div>
+        <div class="border p-2" th:utext="*{fullDescription}"></div>
     </div>
 </th:block>
 </body>

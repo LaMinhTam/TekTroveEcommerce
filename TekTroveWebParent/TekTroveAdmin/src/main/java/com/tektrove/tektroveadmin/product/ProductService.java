@@ -45,6 +45,14 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    public void updateProductPricingInformation(Product productInForm) {
+        Product productInDB = productRepository.findById(productInForm.getId()).get();
+        productInDB.setCost(productInForm.getCost());
+        productInDB.setPrice(productInForm.getPrice());
+        productInDB.setDiscountPercent(productInForm.getDiscountPercent());
+        productRepository.save(productInDB);
+    }
+
     public String checkUnique(Integer id, String name) {
         boolean isCreatingNew = (id == null || id == 0);
         Product productByName = productRepository.findByName(name);

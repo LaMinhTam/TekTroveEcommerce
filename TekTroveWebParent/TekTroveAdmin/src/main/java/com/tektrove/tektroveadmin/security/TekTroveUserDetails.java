@@ -67,4 +67,8 @@ public class TekTroveUserDetails implements UserDetails {
     public void setLastName(String lastName){
         this.user.setLastName(lastName);
     }
+
+    public boolean hasRole(String name){
+        return user.hasRole(name);
+    }
 }
