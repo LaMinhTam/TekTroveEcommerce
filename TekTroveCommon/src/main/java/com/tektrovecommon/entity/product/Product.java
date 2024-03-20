@@ -119,4 +119,19 @@ public class Product implements Exportable {
     public PdfPTable getPdfExportTable(PdfPTable table) throws IOException, DocumentException {
         return null;
     }
+
+    @Transient
+    public String getShortName() {
+        if (name.length() > 70) {
+            return name.substring(0, 70).concat("...");
+        }
+        return name;
+    }
+
+    @Transient
+    public float getDiscountPrice() {
+        if (discountPercent == 0)
+            return price;
+        return price * (1 - discountPercent / 100);
+    }
 }

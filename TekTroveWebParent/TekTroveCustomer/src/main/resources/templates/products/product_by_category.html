@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header(${pageTitle})}"></head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::header_menu}"></div>
+    <div th:replace="~{fragments::search_form}"></div>
+
+    <div th:replace="~{fragments::breadcrumb}"></div>
+
+    <div class="row">
+        <th:block th:each="product : ${products}">
+            <div class="col">
+                <a th:href="@{/p/{alias}(alias=${product.alias})}">
+                    <img th:src="@{${product.mainImagePath}}" width="150px"/>
+                    <br/>
+                    <b th:text="${product.shortName}"></b>
+                </a>
+                <div th:if="${product.discountPercent <= 0}">
+                    <span>$ [[${product.price}]]</span>
+                </div>
+                <div th:if="${product.discountPercent > 0}">
+                    <span style="font-size: larger; color: darkred">$ [[${product.discountPrice}]]</span>
+                    <del><span>$ [[${product.price}]]</span></del>
+                </div>
+            </div>
+        </th:block>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div th:replace="~{fragments::pagination('/c/' + ${category.getAlias()},'product')}"></div>
+        </div>
+    </div>
+    <div th:replace="~{fragments::footer_menu}"></div>
+</div>
+</body>
+</html>

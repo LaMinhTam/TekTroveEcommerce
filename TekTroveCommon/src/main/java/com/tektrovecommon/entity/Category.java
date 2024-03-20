@@ -34,6 +34,7 @@ public class Category implements Exportable {
     @JoinColumn(name = "parent_id")
     private Category parent;
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
+    @OrderBy("name asc")
     private Set<Category> children = new HashSet<>();
     @Column(name = "all_parent_ids", length = 256)
     private String allParentIDs;

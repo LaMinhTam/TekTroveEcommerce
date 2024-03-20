@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header(${pageTitle})}"></head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::header_menu}"></div>
+    <div th:replace="~{fragments::search_form}"></div>
+
+    <div class="row">
+        <th:block th:each="product : ${products}">
+            <div th:replace="~{products/product_info::content}"></div>
+        </th:block>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div th:replace="~{fragments::pagination('/search', ${keyword})}"></div>
+        </div>
+    </div>
+    <div th:replace="~{fragments::footer_menu}"></div>
+</div>
+</body>
+</html>

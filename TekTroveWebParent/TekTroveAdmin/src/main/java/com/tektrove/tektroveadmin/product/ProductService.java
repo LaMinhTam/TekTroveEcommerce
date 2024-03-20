@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.product;
 
+import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.exception.ProductNotFoundException;
 import jakarta.transaction.Transactional;

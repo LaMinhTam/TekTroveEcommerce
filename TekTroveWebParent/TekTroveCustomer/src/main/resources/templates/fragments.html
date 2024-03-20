@@ -8,7 +8,7 @@
     <script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 </head>
 <body>
-<div th:fragment="navbar">
+<div th:fragment="header_menu">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" th:href="@{/}">
             <img style="max-width: 100px; height: auto;" th:src="@{/images/logo.png}"/>
@@ -19,14 +19,84 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-item nav-link active" href="#">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="#">Features</a>
-                <a class="nav-item nav-link" href="#">Pricing</a>
-                <a class="nav-item nav-link disabled" href="#">Disabled</a>
+                <a class="nav-item nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="#">Payment</a>
+                <a class="nav-item nav-link" href="#">Shipping & Delivery</a>
+                <a class="nav-item nav-link" href="#">Login</a>
+                <a class="nav-item nav-link" href="#">Register</a>
+                <a class="nav-item nav-link" href="#">Contact</a>
             </div>
         </div>
     </nav>
 </div>
+
+<th:block th:fragment="breadcrumb">
+    <div th:if="${categoriesHierarchical != null && !categoriesHierarchical.empty}">
+        <div class="row">
+            <div class="col-md-12">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                    <th:block th:each="category : ${categoriesHierarchical}">
+                        <li class="breadcrumb-item">
+                            <a th:href="@{/c/{alias}(alias=${category.alias})}" th:text="${category.name}"></a>
+                        </li>
+                    </th:block>
+                    <li class="breadcrumb-item" th:if="${product}" th:text="${product.name}"></li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</th:block>
+
+<form th:action="@{/search}" class="form-inline my-3" th:fragment="search_form">
+    <div class="input-group">
+        <input type="search" name="keyword" th:value="${keyword}" class="form-control" required
+               placeholder="Search..." aria-label="Search" aria-describedby="button-addon"/>
+        <div class="input-group-append">
+            <button type="submit" class="btn btn-primary" id="button-addon">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>
+
+<div th:fragment="pagination(moduleUrl, entityName)" th:remove="tag">
+    <div class="text-center m-1" th:if="${totalItems > 0}">
+			<span>Showing [[${entityName}]] # [[${startCount}]] to
+				[[${endCount}]] of [[${totalItems}]]</span>
+    </div>
+    <div class="text-center m-1" th:unless="${totalItems > 0}">
+        <span>No [[${entityName}]] found</span>
+    </div>
+
+    <div th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination justify-content-center flex-wrap">
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(1, 'First')}"></a>
+                </li>
+                <li th:class="${currentPage > 1 ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${currentPage - 1}, 'Previous')}"></a>
+                </li>
+
+                <li th:class="${currentPage != i ? 'page-item': 'page-item active'}"
+                    th:each="i : ${#numbers.sequence(1, totalPages)}"><a
+                        th:replace="~{fragments :: page_link(${i}, ${i})}"></a></li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${currentPage + 1}, 'Next')}"></a>
+                </li>
+
+                <li th:class="${currentPage < totalPages ? 'page-item' : 'page-item disabled'}">
+                    <a th:replace="~{fragments :: page_link(${totalPages}, 'Last')}"></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+<a th:fragment="page_link(pageNum, label)" class="page-link"
+   th:href="@{${moduleUrl} + '/page/' + ${pageNum} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">[[${label}]]</a>
+
 <div th:fragment="footer_menu">
     <nav class="navbar navbar-expand-lg bg-light navbar-light">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#bottomNavbar">

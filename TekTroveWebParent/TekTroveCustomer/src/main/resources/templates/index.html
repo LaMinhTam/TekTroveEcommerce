@@ -3,9 +3,16 @@
 <head th:replace="~{fragments::page_header('Shopme')}"></head>
 <body>
 <div class="container-fluid">
-    <div th:replace="~{fragments::navbar}"></div>
+    <div th:replace="~{fragments::header_menu}"></div>
+    <div th:replace="~{fragments::search_form}"></div>
     <div>
         <h1>Welcome to TechTrove</h1>
+    </div>
+    <div class="row">
+        <div class="col" th:each="category : ${categories}">
+            <div><img th:src="@{${category.imagePath}}"/></div>
+            <div><a th:text="${category.name}" th:href="@{/c/{alias}(alias=${category.alias})}"></a></div>
+        </div>
     </div>
     <div th:replace="~{fragments::footer_menu}"></div>
 </div>

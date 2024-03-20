@@ -1,11 +1,14 @@
 package com.tektrove.tektroveadmin.product;
 
+import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%"
@@ -21,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             + " OR p.shortDescription LIKE %?2%"
             + " OR p.fullDescription LIKE %?2%"
             + " OR p.brand.name LIKE %?2%)")
-    Page<Product> findByCategoryIdAndKeyword(String categoryId, String keyword,Pageable pageable);
+    Page<Product> findByCategoryIdAndKeyword(String categoryId, String keyword, Pageable pageable);
 
     Product findByName(String name);
 
