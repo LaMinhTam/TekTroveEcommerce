@@ -1,7 +1,6 @@
-package com.tektrove.tektroveadmin.setting;
+package com.tektrove.tektroveadmin.setting.currency;
 
 import com.tektrovecommon.entity.setting.Currency;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

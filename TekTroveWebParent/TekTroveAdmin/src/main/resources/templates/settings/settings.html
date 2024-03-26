@@ -26,6 +26,9 @@
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#mailTemplates" role="tab">Mail Templates</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#payment" role="tab">Payment</a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -33,26 +36,42 @@
                 <div th:replace="~{settings/general}"></div>
             </div>
             <div class="tab-pane" id="countries" role="tabpanel">
+                <div th:replace="~{settings/countries}"></div>
             </div>
             <div class="tab-pane" id="states" role="tabpanel">
+                <div th:replace="~{settings/states}"></div>
             </div>
             <div class="tab-pane p-3" id="mailServer" role="tabpanel">
             </div>
             <div class="tab-pane p-3" id="mailTemplates" role="tabpanel">
+            </div>
+            <div class="tab-pane p-3" id="payment" role="tabpanel">
             </div>
         </div>
     </div>
 
     <div th:replace="~{modal_fragments::modal_dialog}"></div>
 
-    <div th:replace="~{fragments::footer}"></div>
+    <div class="toast justify-content-center d-flex" role="alert" aria-live="polite" aria-atomic="true" data-delay="3000">
+        <div role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-body">
+                <span id="toastMessage"></span>
+            </div>
+        </div>
+    </div>
 
-    <script th:src="@{/js/common_form.js}">
-    </script>
+    <div th:replace="~{fragments::footer}"></div>
 </div>
+<script th:src="@{/js/common.js}"></script>
 <script th:src="@{/js/common_form.js}"></script>
+<script th:src="@{/js/setting.js}"></script>
+<script th:src="@{/js/countries_setting.js}"></script>
+<script th:src="@{/js/states_setting.js}"></script>
 <script>
-    MAX_FILE_SIZE = 102400;
+    let contextPath = "[[@{/}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+    let MAX_FILE_SIZE = 102400;
 </script>
 </body>
 </html>

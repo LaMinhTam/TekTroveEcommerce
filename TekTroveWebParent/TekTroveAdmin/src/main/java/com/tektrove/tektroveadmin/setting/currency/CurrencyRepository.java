@@ -1,4 +1,4 @@
-package com.tektrove.tektroveadmin.setting;
+package com.tektrove.tektroveadmin.setting.currency;
 
 import com.tektrovecommon.entity.setting.Currency;
 import org.springframework.data.jpa.repository.JpaRepository;

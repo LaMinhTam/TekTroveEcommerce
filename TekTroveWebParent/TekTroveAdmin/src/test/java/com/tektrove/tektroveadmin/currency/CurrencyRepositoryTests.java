@@ -1,6 +1,6 @@
 package com.tektrove.tektroveadmin.currency;
 
-import com.tektrove.tektroveadmin.setting.CurrencyRepository;
+import com.tektrove.tektroveadmin.setting.currency.CurrencyRepository;
 import com.tektrovecommon.entity.setting.Currency;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
