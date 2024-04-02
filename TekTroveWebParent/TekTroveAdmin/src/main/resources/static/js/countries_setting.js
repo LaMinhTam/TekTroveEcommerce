@@ -57,6 +57,7 @@ function changeFormStateToNew() {
 }
 
 function addCountry() {
+    if(!validateFormCountry($("#formCountry"))) return;
     let url = contextPath + 'countries/save';
     let countryName = fieldCountryName.val();
     let countryCode = fieldCountryCode.val();
@@ -73,9 +74,9 @@ function addCountry() {
         beforeSend: function (xhr) {
             xhr.setRequestHeader(csrfHeaderName, csrfValue);
         },
-    }).done(function (countryId) {
-        showToastMessage("Newly added country id: " + countryId);
-        selectNewlyAddedCountry(countryId, countryCode, countryName);
+        }).done(function (country) {
+        showToastMessage("Newly added country id: " + country.id);
+        selectNewlyAddedCountry(country);
     }).fail(function () {
         showToastMessage("Error: Could not connect to server or server encounter error. Please try again later.");
     });
@@ -130,10 +131,11 @@ function deleteCountry() {
 
 }
 
-function selectNewlyAddedCountry(countryId, countryCode, countryName) {
-    dropDownCountry.append('<option code="' + countryCode + '" value="' + countryId + '">' + countryName + '</option>');
+function selectNewlyAddedCountry(country) {
+    console.log(country)
+    dropDownCountry.append('<option code="' + country.code + '" value="' + country.id + '">' + country.name + '</option>');
 
-    $("#dropDownCountries option[value='" + countryId + "']").prop('selected', true);
+    $("#dropDownCountries option[value='" + country.id + "']").prop('selected', true);
     fieldCountryName.val("").focus();
     fieldCountryCode.val("");
 }

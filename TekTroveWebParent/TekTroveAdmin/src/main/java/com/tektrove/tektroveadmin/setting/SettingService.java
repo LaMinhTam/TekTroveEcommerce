@@ -21,9 +21,9 @@ public class SettingService {
     public List<Setting> listAllSetting() {
         return settingRepository.findAll();
     }
-
-    public GeneralSettingBag getGeneralSetting() {
-        List<Setting> settings = settingRepository.findByCategoryIn(List.of(SettingCategory.GENERAL, SettingCategory.CURRENCY));
+    //name this function
+    public GeneralSettingBag getSettingBySettingCategories(SettingCategory... settingCategories) {
+        List<Setting> settings = settingRepository.findByCategoryIn(settingCategories);
         return new GeneralSettingBag(settings);
     }
 

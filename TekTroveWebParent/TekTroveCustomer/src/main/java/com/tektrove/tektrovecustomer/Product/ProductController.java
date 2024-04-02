@@ -1,4 +1,4 @@
-package com.tektrove.tektrovecustomer.Product;
+package com.tektrove.tektrovecustomer.product;
 
 import com.tektrove.tektrovecustomer.category.CategoryService;
 import com.tektrovecommon.entity.Category;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-import java.util.List;
 
 @Controller
 public class ProductController {
@@ -49,6 +47,7 @@ public class ProductController {
         model.addAttribute("startCount", startCount);
         model.addAttribute("endCount", endCount);
         model.addAttribute("totalItems", pageInfo.getTotalElements());
+        model.addAttribute("pageTitle", category.getName());
         return "products/product_by_category";
     }
 

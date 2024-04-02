@@ -4,6 +4,7 @@ import com.tektrovecommon.entity.setting.Currency;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CurrencyService {
@@ -15,5 +16,9 @@ public class CurrencyService {
 
     public List<Currency> findAllOrderByNameAsc() {
         return currencyRepository.findAllByOrderByName();
+    }
+
+    public Optional<Currency> findById(int id) {
+        return currencyRepository.findById(id);
     }
 }

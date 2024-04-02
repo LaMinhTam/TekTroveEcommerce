@@ -10,19 +10,7 @@
 
     <div class="row">
         <th:block th:each="product : ${products}">
-            <div class="col">
-                <a th:href="@{/p/{alias}(alias=${product.alias})}">
-                    <img th:src="@{${product.mainImagePath}}" width="150px"/>
-                    <br/>
-                    <b th:text="${product.shortName}"></b>
-                </a>
-                <div th:if="${product.discountPercent <= 0}">
-                    <span>$ [[${product.price}]]</span>
-                </div>
-                <div th:if="${product.discountPercent > 0}">
-                    <span style="font-size: larger; color: darkred">$ [[${product.discountPrice}]]</span>
-                    <del><span>$ [[${product.price}]]</span></del>
-                </div>
+            <div class="col" th:replace="~{products/product_info::content(${product})}">
             </div>
         </th:block>
     </div>

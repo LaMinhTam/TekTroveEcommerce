@@ -28,3 +28,12 @@ function showToastMessage(message) {
     $("#toastMessage").text(message);
     $(".toast").toast('show');
 }
+
+function validateFormCountry(form){
+    const formCountry = form;
+    if(!formCountry[0].checkValidity()){
+        formCountry[0].reportValidity();
+        return false;
+    }
+    return true;
+}

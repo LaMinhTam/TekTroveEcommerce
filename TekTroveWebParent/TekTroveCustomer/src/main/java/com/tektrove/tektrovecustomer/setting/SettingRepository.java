@@ -1,4 +1,4 @@
-package com.tektrove.tektroveadmin.setting;
+package com.tektrove.tektrovecustomer.setting;
 
 import com.tektrovecommon.entity.setting.Setting;
 import com.tektrovecommon.entity.setting.SettingCategory;

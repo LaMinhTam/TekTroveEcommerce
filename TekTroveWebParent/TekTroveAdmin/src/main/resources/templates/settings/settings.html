@@ -33,17 +33,19 @@
 
         <div class="tab-content">
             <div class="tab-pane active p-3" id="general" role="tabpanel">
-                <div th:replace="~{settings/general}"></div>
+                <div th:replace="~{settings/general::content}"></div>
             </div>
             <div class="tab-pane" id="countries" role="tabpanel">
-                <div th:replace="~{settings/countries}"></div>
+                <div th:replace="~{settings/countries::content}"></div>
             </div>
             <div class="tab-pane" id="states" role="tabpanel">
-                <div th:replace="~{settings/states}"></div>
+                <div th:replace="~{settings/states::content}"></div>
             </div>
             <div class="tab-pane p-3" id="mailServer" role="tabpanel">
+                <div th:replace="~{settings/mail_server::content}"></div>
             </div>
             <div class="tab-pane p-3" id="mailTemplates" role="tabpanel">
+                <div th:replace="~{settings/mail_templates/mail_templates::content}"></div>
             </div>
             <div class="tab-pane p-3" id="payment" role="tabpanel">
             </div>
@@ -72,6 +74,10 @@
     let csrfHeaderName = "[[${_csrf.headerName}]]";
     let csrfValue = "[[${_csrf.token}]]";
     let MAX_FILE_SIZE = 102400;
+
+    $(document).ready(function () {
+        $("#CustomerVerificationContent").richText();
+    });
 </script>
 </body>
 </html>

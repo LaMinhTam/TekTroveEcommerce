@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        exposeDirectory("../site-logo", registry);
         exposeDirectory("../categories-images", registry);
         exposeDirectory("../brand-logos", registry);
         exposeDirectory("../product-images", registry);

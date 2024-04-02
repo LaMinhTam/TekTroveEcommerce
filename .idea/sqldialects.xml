@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/TekTroveWebParent/TekTroveCustomer/src/main/java/com/tektrove/tektrovecustomer/Product/ProductRepository.java" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/TekTroveWebParent/TekTroveCustomer/src/main/java/com/tektrove/tektrovecustomer/product/ProductRepository.java" dialect="MySQL" />
   </component>
 </project>

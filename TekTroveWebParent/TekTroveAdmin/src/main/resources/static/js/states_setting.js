@@ -72,6 +72,7 @@ function changeFormStateToSelectState() {
 }
 
 function addState() {
+    if(!validateFormCountry($("#formState"))) return;
     let url = contextPath + "states/save";
     let stateName = fieldStateName.val();
     let countryId = dropDownCountryForState.val();

@@ -1,4 +1,4 @@
-package com.tektrove.tektrovecustomer.Product;
+package com.tektrove.tektrovecustomer.product;
 
 import com.tektrovecommon.entity.product.Product;
 import org.springframework.data.domain.Page;
