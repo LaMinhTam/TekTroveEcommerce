@@ -104,6 +104,11 @@
     </div>
 </form>
 
+<th:block th:fragment="detail(entityId)">
+    <a class="fa-solid fa-file-lines fa-2x icon-green link-detail"
+       th:href="'@{/'+ ${moduleUrl} + '/detail/' + ${entityId}"></a>
+</th:block>
+
 <th:block th:fragment="sort_link(fieldName, displayName)">
     <a class="text-white"
        th:href="@{'/' + ${moduleUrl} + '/page/' + ${currentPage} + '?sortField=' + ${fieldName} + '&sortDir=' + ${sortField != fieldName ? sortDir : reverseSortDir} + ${keyword != null ? '&keyword=' + keyword : ''}}">

@@ -83,8 +83,7 @@
                     </td>
                 </th:block>
                 <td>
-                    <a class="fa-solid fa-file-lines fa-2x icon-green link-detail"
-                       th:href="@{/products/detail/{id}(id=${product.id})}" th:title="${product.name}"></a>
+                    <th:block th:replace="~{fragments::detail(${product.id})}"></th:block>
                     <th:block sec:authorize="hasAnyAuthority('Admin', 'Editor', 'Salesperson')">
                         &nbsp;
                         <th:block th:replace="~{fragments::edit(${product.id})}"></th:block>
@@ -122,12 +121,7 @@
 
     <div th:replace="~{fragments::footer}"></div>
 
-    <div class="modal fade" id="detailModal">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{modal_fragments::emptyModal}"></div>
 
     <div th:replace="~{modal_fragments::confirmModal}"></div>
 </div>

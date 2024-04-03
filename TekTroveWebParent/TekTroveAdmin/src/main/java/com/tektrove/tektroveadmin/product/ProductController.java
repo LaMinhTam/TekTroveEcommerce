@@ -136,14 +136,23 @@ public class ProductController {
     }
 
     @GetMapping("/edit/{id}")
-    public String editProduct(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+    public String editProduct(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes, @AuthenticationPrincipal TekTroveUserDetails loggedUser) {
         try {
             Product product = productService.get(id);
             List<Brand> brands = brandService.listAllSorted();
+            boolean isReadOnlyForSalesperson = false;
+
             model.addAttribute("product", product);
             model.addAttribute("pageTitle", "Edit Product (ID: " + id + ")");
             model.addAttribute("brands", brands);
             model.addAttribute("isAddRichText", true);
+
+            if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor")) {
+                if (loggedUser.hasRole("Salesperson")) {
+                    isReadOnlyForSalesperson = true;
+                }
+            }
+            model.addAttribute("isReadOnlyForSalesperson", isReadOnlyForSalesperson);
 
             return "products/products_form";
         } catch (ProductNotFoundException e) {

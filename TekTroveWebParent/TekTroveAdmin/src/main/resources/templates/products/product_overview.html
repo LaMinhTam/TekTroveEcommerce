@@ -5,7 +5,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Product Name:</label>
         <div class="col-sm-10">
-            <input class="form-control" maxlength="255" minlength="3" required th:field="*{name}" th:readonly="${#authorization.expr('hasAuthority(''Salesperson'')')}"
+            <input class="form-control" maxlength="255" minlength="3" required th:field="*{name}" th:readonly="${isReadOnlyForSalesperson}"
                    type="text"/>
         </div>
     </div>
@@ -15,14 +15,14 @@
         <div class="col-sm-10">
             <input class="form-control" maxlength="255" minlength="3"
                    placeholder="Default is product name (space is replace by dashes)" th:field="*{alias}"
-                   th:readonly="${#authorization.expr('hasAuthority(''Salesperson'')')}" type="text"/>
+                   th:readonly="${isReadOnlyForSalesperson}" type="text"/>
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Brand:</label>
         <div class="col-sm-10">
-            <select class="form-control" th:field="*{brand}" th:readonly="${#authorization.expr('hasAuthority(''Salesperson'')')}">
+            <select class="form-control" th:field="*{brand}" th:readonly="${isReadOnlyForSalesperson}">
                 <th:block th:each="brand : ${brands}">
                     <option th:value="${brand.id}" th:text="${brand.name}"></option>
                 </th:block>
@@ -33,7 +33,7 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Category:</label>
         <div class="col-sm-10">
-            <select class="form-control" th:field="*{category}" th:readonly="${#authorization.expr('hasAuthority(''Salesperson'')')}">
+            <select class="form-control" th:field="*{category}" th:readonly="${isReadOnlyForSalesperson}">
                 <th:block th:if="${product.brand} != null">
                     <option  th:each="category : ${product.brand.categories}" th:value="${category.id}" th:text="${category.name}"></option>
                 </th:block>
@@ -44,14 +44,14 @@
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">Enabled</label>
         <div class="col-sm-10">
-            <input type="checkbox" th:field="*{enabled}" th:disabled="${#authorization.expr('hasAuthority(''Salesperson'')')}"/>
+            <input type="checkbox" th:field="*{enabled}" th:disabled="${isReadOnlyForSalesperson}"/>
         </div>
     </div>
 
     <div class="form-group row">
         <label class="col-sm-2 col-form-label">In Stock</label>
         <div class="col-sm-10">
-            <input type="checkbox" th:field="*{inStock}" th:disabled="${#authorization.expr('hasAuthority(''Salesperson'')')}"/>
+            <input type="checkbox" th:field="*{inStock}" th:disabled="${isReadOnlyForSalesperson}"/>
         </div>
     </div>
 
