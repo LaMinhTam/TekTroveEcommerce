@@ -19,12 +19,29 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomerUserDetailsService();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService());
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
     SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
                         .defaultSuccessUrl("/")
                         .permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll());
+                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
+                .rememberMe(rememberMe -> rememberMe
+                        .key("wc\"7u14UFcRXO%>")
+                        .tokenValiditySeconds(86400)
+                        .userDetailsService(this.userDetailsService()));
 
         return httpSecurity.build();
     }

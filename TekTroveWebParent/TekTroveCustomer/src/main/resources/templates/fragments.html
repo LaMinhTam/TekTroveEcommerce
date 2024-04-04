@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:fragment="page_header(title)">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>[[${title}]] - [[${SITE_NAME}]]</title>
@@ -20,14 +21,65 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-item nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
-                <a class="nav-item nav-link" href="#">Payment</a>
-                <a class="nav-item nav-link" href="#">Shipping & Delivery</a>
-                <a class="nav-item nav-link" href="#">Login</a>
+                <a class="nav-item nav-link" th:href="@{/}">Payment</a>
+                <a class="nav-item nav-link" th:href="@{/}">Shipping & Delivery</a>
+                <a class="nav-item nav-link" th:href="@{/login}">Login</a>
                 <a class="nav-item nav-link" th:href="@{/register}">Register</a>
-                <a class="nav-item nav-link" href="#">Contact</a>
+                <a class="nav-item nav-link" th:href="@{/}">Contact</a>
             </div>
         </div>
     </nav>
+</div>
+
+<div th:fragment="search_nav" class="row">
+    <div class="col-md">
+        <th:block sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" th:hidden="true" name="logoutForm">
+                <input type="submit" value="Logout"/>
+            </form>
+        </th:block>
+
+        <nav class="navbar navbar-expand-sm bg-light">
+            <div class="collapse navbar-collapse" id="searchNav">
+                <form th:action="@{/search}" class="form-inline my-3" th:fragment="search_form">
+                    <div class="input-group">
+                        <input type="search" name="keyword" th:value="${keyword}" class="form-control" required
+                               placeholder="Search..." aria-label="Search" aria-describedby="button-addon"/>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary" id="button-addon">
+                                Submit
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <ul class="navbar-nav">
+                    <th:block sec:authorize="isAuthenticated()">
+                        <li class="nav-item">
+                            <b><a class="nav-link" th:href="@{/customers}" sec:authentication="principal.fullName"></a></b>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/addresses}">Addresses</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/questions}">Questions</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/reviews}">Reviews</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/orders}">Orders</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/cart}">Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="javascript: document.logoutForm.submit()">Logout</a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </nav>
+    </div>
 </div>
 
 <th:block th:fragment="breadcrumb">
@@ -47,18 +99,6 @@
         </div>
     </div>
 </th:block>
-
-<form th:action="@{/search}" class="form-inline my-3" th:fragment="search_form">
-    <div class="input-group">
-        <input type="search" name="keyword" th:value="${keyword}" class="form-control" required
-               placeholder="Search..." aria-label="Search" aria-describedby="button-addon"/>
-        <div class="input-group-append">
-            <button type="submit" class="btn btn-primary" id="button-addon">
-                Submit
-            </button>
-        </div>
-    </div>
-</form>
 
 <div th:fragment="pagination(moduleUrl, entityName)" th:remove="tag">
     <div class="text-center m-1" th:if="${totalItems > 0}">

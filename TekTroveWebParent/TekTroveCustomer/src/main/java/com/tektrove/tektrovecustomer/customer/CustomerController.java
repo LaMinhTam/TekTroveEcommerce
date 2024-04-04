@@ -37,7 +37,7 @@ public class CustomerController {
         model.addAttribute("pageTitle", "Customer Registration");
         model.addAttribute("customer", new Customer());
 
-        return "register/register_form";
+        return "authentication/register/register_form";
     }
 
     @PostMapping("/create_customer")
@@ -45,7 +45,7 @@ public class CustomerController {
         customerService.registerCustomer(customer);
         sendVerificationEmail(request, customer);
         model.addAttribute("pageTitle", "Registration Successful!");
-        return "register/register_success";
+        return "authentication/register/register_success";
     }
 
     private void sendVerificationEmail(HttpServletRequest request, Customer customer) throws MessagingException, UnsupportedEncodingException {
@@ -81,6 +81,6 @@ public class CustomerController {
         } else {
             model.addAttribute("pageTitle", "Verification Failed!");
         }
-        return "register/verify_result";
+        return "authentication/register/verify_result";
     }
 }
