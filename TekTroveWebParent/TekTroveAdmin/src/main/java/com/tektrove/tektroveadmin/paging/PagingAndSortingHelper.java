@@ -24,6 +24,7 @@ public class PagingAndSortingHelper {
 
     public void updateModelAttributes(int pageNum, Page<?> page) {
         model.addAttribute(moduleName, page.getContent());
+        model.addAttribute("moduleUrl", moduleName);
         int pageSize = page.getSize();
 
         long startCount = (pageNum - 1) * pageSize + 1;
