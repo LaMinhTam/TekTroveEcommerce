@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.user;
 
+import com.tektrove.tektroveadmin.paging.SearchRepository;
 import com.tektrovecommon.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends SearchRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE CONCAT(u.id, ' ', u.email, ' ', u.firstName, ' ',"
             + " u.lastName) LIKE %?1%")

@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.customer;
 
+import com.tektrove.tektroveadmin.paging.SearchRepository;
 import com.tektrovecommon.entity.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+public interface CustomerRepository extends SearchRepository<Customer, Integer> {
     @Query("SELECT c FROM Customer c WHERE CONCAT(c.firstName, ' ', c.lastName, ' ', " +
             "c.email, ' ', c.addressLine1, ' ', c.addressLine2, ' ', c.city, ' ', " +
             "c.state, ' ', c.postalCode, ' ', c.country.name) LIKE %?1%")

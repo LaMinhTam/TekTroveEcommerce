@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.product;
 
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.exception.ProductNotFoundException;
@@ -27,11 +28,15 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Page<Product> listByPage(int pageNum, String sortField, String sortDir, String keyword, String categoryId) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+    public Page<Product> listByPage(int pageNum, PagingAndSortingHelper helper, String categoryId) {
+        Sort sort = Sort.by(helper.getSortField());
+        sort = helper.getSortDir().equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE, sort);
-        return categoryId == null || Integer.parseInt(categoryId) == 0 ? productRepository.findAll(keyword, pageable) : productRepository.findByCategoryIdAndKeyword("-" + categoryId + "-", keyword, pageable);
+        //when the category id is null or 0, it means we are searching for all products
+        //else it means we are searching for products in a specific category, and with -categoryId- in the categoryIds column
+        return categoryId == null || Integer.parseInt(categoryId) == 0 ?
+                productRepository.findAll(helper.getKeyword(), pageable) :
+                productRepository.findByCategoryIdAndKeyword("-" + categoryId + "-", helper.getKeyword(), pageable);
     }
 
     public Product save(Product product) {

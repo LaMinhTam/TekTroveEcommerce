@@ -1,6 +1,8 @@
 package com.tektrove.tektroveadmin.customer;
 
 import com.tektrove.tektroveadmin.category.CategoryPageInfo;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
 import com.tektrovecommon.entity.Customer;
 import com.tektrovecommon.entity.setting.Country;
 import com.tektrovecommon.exception.CustomerNotFoundException;
@@ -32,29 +34,10 @@ public class CustomerController {
 
 
     @GetMapping("/page/{pageNum}")
-    public String listByPage(Model model, @PathVariable int pageNum, String sortField, String sortDir, String keyword) {
-        Page<Customer> customers = customerService.listByPage(pageNum, sortField, sortDir, keyword);
-
-        model.addAttribute("customers", customers.getContent());
-
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("moduleUrl", "customers");
-
-        long startCount = (long) (pageNum - 1) * CustomerService.CUSTOMER_PER_PAGE + 1;
-        long endCount = startCount + CustomerService.CUSTOMER_PER_PAGE - 1;
-        if (endCount > customers.getTotalElements()) {
-            endCount = customers.getTotalElements();
-        }
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", customers.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", customers.getTotalElements());
-
+    public String listByPage(
+            @PagingAndSortingParam(moduleName = "customers") PagingAndSortingHelper helper,
+            @PathVariable int pageNum) {
+        customerService.listByPage(pageNum, helper);
         return "customers/customers";
     }
 

@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.user;
 
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrovecommon.entity.Role;
 import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.UserNotFoundException;
@@ -34,11 +35,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Page<User> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNum - 1, USER_PER_PAGE, sort);
-        return keyword != null ? userRepository.findAll(keyword, pageable) : userRepository.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.listByPage(pageNum, USER_PER_PAGE, userRepository);
     }
 
     public void updateUserEnabled(int id, boolean enabled) {

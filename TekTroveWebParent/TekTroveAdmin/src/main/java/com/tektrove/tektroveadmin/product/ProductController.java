@@ -2,6 +2,8 @@ package com.tektrove.tektroveadmin.product;
 
 import com.tektrove.tektroveadmin.brand.BrandService;
 import com.tektrove.tektroveadmin.category.CategoryService;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
 import com.tektrove.tektroveadmin.security.TekTroveUserDetails;
 import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
@@ -44,29 +46,10 @@ public class ProductController {
     }
 
     @GetMapping("/page/{pageNum}")
-    public String findByPage(Model model, @PathVariable int pageNum, String sortField, String sortDir, String keyword, String categoryId) {
-        Page<Product> products = productService.listByPage(pageNum, sortField, sortDir, keyword, categoryId);
-        model.addAttribute("products", products.getContent());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("moduleUrl", "products");
-
-        int pageSize = products.getSize();
-
-        long startCount = (pageNum - 1) * pageSize + 1;
-        long endCount = startCount + pageSize - 1;
-        if (endCount > products.getTotalElements()) {
-            endCount = products.getTotalElements();
-        }
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", products.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", products.getTotalElements());
+    public String findByPage(
+            @PagingAndSortingParam(moduleName = "products") PagingAndSortingHelper helper,
+            Model model, @PathVariable int pageNum, String categoryId) {
+        productService.listByPage(pageNum, helper, categoryId);
         model.addAttribute("categoryId", categoryId);
         List<Category> categories = categoryService.getCategoriesUsedInForm();
         model.addAttribute("categories", categories);
@@ -95,7 +78,7 @@ public class ProductController {
                               String[] imageIDs,
                               String[] imageNames,
                               RedirectAttributes redirectAttributes) throws IOException {
-        if (loggedUser.hasRole("Salesperson")) {
+        if (!loggedUser.hasRole("Admin") && !loggedUser.hasRole("Editor") && loggedUser.hasRole("Salesperson")) {
             productService.updateProductPricingInformation(product);
             redirectAttributes.addFlashAttribute("message", "The product has been saved successfully.");
             return defaultRedirectURL;

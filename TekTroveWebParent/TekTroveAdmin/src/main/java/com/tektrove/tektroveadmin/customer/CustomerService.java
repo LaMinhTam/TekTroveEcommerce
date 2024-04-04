@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.customer;
 
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrove.tektroveadmin.setting.country.CountryRepository;
 import com.tektrovecommon.entity.Customer;
 import com.tektrovecommon.entity.setting.Country;
@@ -23,20 +24,15 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
     private final CountryRepository countryRepository;
     private final PasswordEncoder passwordEncoder;
+
     public CustomerService(CustomerRepository customerRepository, CountryRepository countryRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
         this.countryRepository = countryRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Page<Customer> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNum - 1, CUSTOMER_PER_PAGE, sort);
-        if (keyword != null) {
-            return customerRepository.findAll(keyword, pageable);
-        }
-        return customerRepository.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.listByPage(pageNum, CUSTOMER_PER_PAGE, customerRepository);
     }
 
     public void updateCustomerEnabledStatus(Integer id, boolean enabled) {

@@ -1,6 +1,8 @@
 package com.tektrove.tektroveadmin.user;
 
 import com.itextpdf.text.DocumentException;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
 import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrovecommon.entity.Role;
@@ -35,32 +37,10 @@ public class UserController {
     }
 
     @GetMapping("/page/{pageNum}")
-    public String listByPage(Model model, @PathVariable int pageNum, @RequestParam String sortField, @RequestParam String sortDir, @RequestParam(required = false) String keyword) {
-        Page<User> users = userService.listByPage(pageNum, sortField, sortDir, keyword);
-
-        model.addAttribute("users", users.getContent());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("moduleUrl", "users");
-
-
-        int pageSize = users.getSize();
-
-        long startCount = (pageNum - 1) * pageSize + 1;
-        long endCount = startCount + pageSize - 1;
-        if (endCount > users.getTotalElements()) {
-            endCount = users.getTotalElements();
-        }
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", users.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", users.getTotalElements());
-
+    public String listByPage(
+            @PagingAndSortingParam(moduleName = "users") PagingAndSortingHelper helper,
+            @PathVariable int pageNum) {
+        userService.listByPage(pageNum, helper);
         return "users/users";
     }
 

@@ -2,6 +2,8 @@ package com.tektrove.tektroveadmin.brand;
 
 import com.opencsv.CSVWriter;
 import com.tektrove.tektroveadmin.category.CategoryService;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
+import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
 import com.tektrove.tektroveadmin.utils.ExporterUtil;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
 import com.tektrove.tektroveadmin.utils.ResponseHeaderUtil;
@@ -41,31 +43,10 @@ public class BrandController {
     }
 
     @GetMapping("/page/{pageNum}")
-    public String listByPage(Model model, @PathVariable int pageNum, @RequestParam String sortField, @RequestParam String sortDir, @RequestParam(required = false) String keyword) {
-        Page<Brand> brands = brandService.listByPage(pageNum, sortField, sortDir, keyword);
-
-        model.addAttribute("brands", brands.getContent());
-
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDir", sortDir);
-        String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
-        model.addAttribute("reverseSortDir", reverseSortDir);
-        model.addAttribute("keyword", keyword);
-        model.addAttribute("moduleUrl", "brands");
-
-        int pageSize = brands.getSize();
-
-        long startCount = (pageNum - 1) * pageSize + 1;
-        long endCount = startCount + pageSize - 1;
-        if (endCount > brands.getTotalElements()) {
-            endCount = brands.getTotalElements();
-        }
-        model.addAttribute("currentPage", pageNum);
-        model.addAttribute("totalPages", brands.getTotalPages());
-        model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
-        model.addAttribute("totalItems", brands.getTotalElements());
-
+    public String listByPage(
+            @PagingAndSortingParam(moduleName = "brands") PagingAndSortingHelper helper,
+            @PathVariable int pageNum) {
+        brandService.listByPage(pageNum, helper);
         return "brands/brands";
     }
 

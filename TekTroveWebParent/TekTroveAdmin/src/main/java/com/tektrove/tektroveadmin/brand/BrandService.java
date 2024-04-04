@@ -1,5 +1,6 @@
 package com.tektrove.tektroveadmin.brand;
 
+import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.User;
 import com.tektrovecommon.exception.BrandNotFoundException;
@@ -25,11 +26,8 @@ public class BrandService {
         return brandRepository.findAll();
     }
 
-    public Page<Brand> listByPage(int pageNum, String sortField, String sortDir, String keyword) {
-        Sort sort = Sort.by(sortField);
-        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNum - 1, BRAND_PER_PAGE, sort);
-        return keyword != null ? brandRepository.findAll(keyword, pageable) : brandRepository.findAll(pageable);
+    public void listByPage(int pageNum, PagingAndSortingHelper helper) {
+        helper.listByPage(pageNum, BRAND_PER_PAGE, brandRepository);
     }
 
     public Brand findBrandById(int id) throws BrandNotFoundException {
