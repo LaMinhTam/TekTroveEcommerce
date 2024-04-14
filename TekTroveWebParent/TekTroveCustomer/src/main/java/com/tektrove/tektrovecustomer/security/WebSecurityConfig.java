@@ -1,5 +1,8 @@
 package com.tektrove.tektrovecustomer.security;
 
+import com.tektrove.tektrovecustomer.security.oauth.CustomerOAuth2UserService;
+import com.tektrove.tektrovecustomer.security.oauth.OAuth2LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,6 +16,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    @Autowired
+    private CustomerOAuth2UserService customerOAuth2UserService;
+    @Autowired
+    private OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+    @Autowired
+    private DatabaseLoginSuccessHandler databaseLoginSuccessHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -33,10 +43,17 @@ public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+        httpSecurity.authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/account_details","/update_account_details").authenticated()
+                        .anyRequest().permitAll())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
+                        .successHandler(databaseLoginSuccessHandler)
                         .defaultSuccessUrl("/")
                         .permitAll())
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customerOAuth2UserService))
+                        .successHandler(oAuth2LoginSuccessHandler))
                 .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
                 .rememberMe(rememberMe -> rememberMe
                         .key("wc\"7u14UFcRXO%>")

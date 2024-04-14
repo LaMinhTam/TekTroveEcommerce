@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CountryRepository extends JpaRepository<Country, Integer> {
     public List<Country> findAllByOrderByNameAsc();
+
+    public Country findByCode(String code);
 }

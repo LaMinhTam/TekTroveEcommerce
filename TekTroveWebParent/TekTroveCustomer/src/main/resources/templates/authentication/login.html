@@ -4,7 +4,13 @@
 <body class="bg-light">
 <div class="container-fluid text-center">
     <div><img th:src="@{${SITE_LOGO}}" class="img-fluid"/></div>
-
+    <a th:href="@{/oauth2/authorization/google}" class="mt-3 btn btn-secondary"><i class="fab fa-google"></i> Login with
+        Google</a>
+    <br/>
+<!--    could add login with facebook if launch the app and turn on scope email-->
+<!--    <a th:href="@{/oauth2/authorization/facebook}" class="mt-3 btn btn-primary"><i class="fab fa-facebook"></i> Login-->
+<!--        with-->
+<!--        Facebook</a>-->
     <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 30px auto">
         <div th:if="${param.error}">
             <p class="alert alert-danger" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}"></p>
@@ -31,8 +37,10 @@
             </p>
         </div>
     </form>
-
-    <div th:replace="~{fragments::footer}"></div>
+    <br/>
+    <div>or <a th:href="@{/show_forgot}">Forgot Password</a></div>
+    <div>Don't have account <a th:href="@{/register}" class="btn btn-link">Sign Up</a></div>
+    <div th:replace="~{fragments::footer_menu}"></div>
 </div>
 </body>
 </html>

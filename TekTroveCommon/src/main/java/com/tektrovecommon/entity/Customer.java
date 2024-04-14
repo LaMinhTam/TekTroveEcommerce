@@ -1,6 +1,7 @@
 package com.tektrovecommon.entity;
 
 import com.tektrovecommon.entity.setting.Country;
+import jakarta.annotation.Resource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -45,7 +46,11 @@ public class Customer {
     private boolean enabled;
     @Column(length = 64)
     private String activationCode;
-
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10)
+    private AuthenticationType authenticationType;
+    @Column(length = 30)
+    private String resetPasswordToken;
     @Transient
     public String getFullName() {
         return firstName + " " + lastName;

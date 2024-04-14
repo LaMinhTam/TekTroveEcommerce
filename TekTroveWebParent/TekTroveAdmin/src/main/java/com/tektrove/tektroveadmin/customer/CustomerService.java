@@ -55,6 +55,7 @@ public class CustomerService {
         customer.setEnabled(customerInDB.isEnabled());
         customer.setCreatedTime(customerInDB.getCreatedTime());
         customer.setActivationCode(customerInDB.getActivationCode());
+        customer.setResetPasswordToken(customerInDB.getResetPasswordToken());
 
         customerRepository.save(customer);
     }

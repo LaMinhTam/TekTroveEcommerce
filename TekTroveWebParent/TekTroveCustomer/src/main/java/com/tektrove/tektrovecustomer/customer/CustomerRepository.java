@@ -1,5 +1,6 @@
 package com.tektrove.tektrovecustomer.customer;
 
+import com.tektrovecommon.entity.AuthenticationType;
 import com.tektrovecommon.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -18,5 +19,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     @Modifying
     @Query("UPDATE Customer c SET c.enabled = TRUE, c.activationCode = NULL WHERE c.id = :id")
-    public void enabledCustomer(Integer id);
+    void enabledCustomer(Integer id);
+
+    @Query("UPDATE Customer c SET c.authenticationType = ?2 where c.id = ?1")
+    @Modifying
+    void updateAuthenticationType(Integer id, AuthenticationType authenticationType);
+
+    Optional<Customer> findByResetPasswordToken(String token);
 }

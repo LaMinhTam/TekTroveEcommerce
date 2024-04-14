@@ -15,4 +15,20 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 997515362355-7b2i56je4i88iomiba5pt25i1p5h64ob.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+          facebook:
+            client-id: 1456308078304367
+            client-secret: ddc46b0e7bac9a9a2f2d1bad86f71037
+            scope:
+#              could add scope email if verify the app
+#              - email
+              - public_profile
