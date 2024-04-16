@@ -28,15 +28,16 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Page<Product> listByPage(int pageNum, PagingAndSortingHelper helper, String categoryId) {
+    public void listByPage(int pageNum, PagingAndSortingHelper helper, String categoryId) {
         Sort sort = Sort.by(helper.getSortField());
         sort = helper.getSortDir().equals("asc") ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNum - 1, PRODUCT_PER_PAGE, sort);
         //when the category id is null or 0, it means we are searching for all products
         //else it means we are searching for products in a specific category, and with -categoryId- in the categoryIds column
-        return categoryId == null || Integer.parseInt(categoryId) == 0 ?
+        Page<Product> products = categoryId == null || Integer.parseInt(categoryId) == 0 ?
                 productRepository.findAll(helper.getKeyword(), pageable) :
                 productRepository.findByCategoryIdAndKeyword("-" + categoryId + "-", helper.getKeyword(), pageable);
+        helper.updateModelAttributes(pageNum, products);
     }
 
     public Product save(Product product) {
