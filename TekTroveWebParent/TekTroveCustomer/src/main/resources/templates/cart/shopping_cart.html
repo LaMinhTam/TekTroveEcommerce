@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Home')}"></head>
+<body>
+<div class="container-fluid">
+    <div th:replace="~{fragments::header_menu}"></div>
+    <div th:replace="~{fragments::search_nav}"></div>
+    <div class="text-center" id="introduce">
+        <h1>Your Shopping Cart</h1>
+    </div>
+    <div class="row m-1" id="cartTable">
+        <div class="col-sm-8">
+            <th:block th:each="cartItem, status : ${cartItems}">
+                <div th:id="'row' + ${product.id}" th:with="product = ${cartItem.product}">
+                    <div class="row border rounded">
+                        <div class="col-1 d-flex flex-column align-items-center">
+                            <div class="divCount">[[${status.count}]]</div>
+                            <a class="fas fa-trash text-danger link-remove"
+                               th:href="@{/cart/remove/{productId}(productId = ${product.id})}"></a>
+                        </div>
+                        <div class="col-3">
+                            <img th:src="@{${product.mainImagePath}}" class="img-fluid"/>
+                        </div>
+                        <div class="col-6">
+                            <div><a th:href="@{/p/{alias}(alias=${product.alias})}"><b
+                                    th:text="${product.shortName}"></b></a></div>
+                            <div th:replace="~{cart/quantity_control::quantity_control(${cartItem.quantity}, ${product.id})}"></div>
+                            <div>
+                                <span>X&nbsp;</span>
+                                <div th:replace="~{products/product_info::product_price}"></div>
+                            </div>
+                            <div>
+                                <span>=&nbsp;</span>
+                                <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]
+                                </th:block>
+                                <span class="subtotal" th:id="'subtotal' + ${product.id}">[[${#numbers.formatDecimal(cartItem.subTotal, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                                <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </th:block>
+        </div>
+
+        <div class="col-sm-4" th:unless="${#lists.isEmpty(cartItems)}">
+            <div>
+                <h3>Estimated Total:</h3>
+            </div>
+            <h3 class="mt-2">
+                <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</th:block>
+                <span th:id="estimatedTotal">[[${#numbers.formatDecimal(estimatedTotal, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]</span>
+                <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</th:block>
+            </h3>
+            <div>
+                <a class="btn btn-primary" th:href="@{/checkout}">Checkout</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="sectionEmptyCartMessage"
+         th:class="'row m-1 text-center ' + (${#lists.isEmpty(cartItems)} ? '' : 'd-none')">
+        <h3>You have not chosen any products yet.</h3>
+    </div>
+
+    <div th:replace="~{modal_fragments::modal_dialog}"></div>
+    <div th:replace="~{fragments::footer_menu}"></div>
+</div>
+<script th:src="@{/js/modal_common.js}"></script>
+<script th:src="@{/js/shopping_cart.js}"></script>
+<script th:src="@{/js/jquery.number.min.js}"></script>
+<script>
+    const contextPath = "[[@{/}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+    let decimalPointType = "[[${DECIMAL_POINT_TYPE}]]" === "COMMA" ? "," : ".";
+    let thousandsPointType = "[[${THOUSANDS_POINT_TYPE}]]" === "COMMA" ? "," : ".";
+    let decimalDigits = "[[${DECIMAL_DIGITS}]]";
+</script>
+</body>
+</html>

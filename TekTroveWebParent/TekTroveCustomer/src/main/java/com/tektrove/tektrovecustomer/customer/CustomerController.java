@@ -3,6 +3,7 @@ package com.tektrove.tektrovecustomer.customer;
 import com.tektrove.tektrovecustomer.security.CustomerUserDetails;
 import com.tektrove.tektrovecustomer.security.oauth.CustomerOAuth2User;
 import com.tektrove.tektrovecustomer.setting.SettingService;
+import com.tektrove.tektrovecustomer.utils.AuthenticationUtil;
 import com.tektrove.tektrovecustomer.utils.MailSenderHelper;
 import com.tektrovecommon.entity.Customer;
 import com.tektrovecommon.entity.setting.Country;
@@ -84,7 +85,7 @@ public class CustomerController {
 
     @GetMapping("/account_details")
     public String showAccountDetails(Model model, HttpServletRequest request) throws CustomerNotFoundException {
-        String email = getEmailOfAuthenticatedCustomer(request);
+        String email = AuthenticationUtil.getEmailOfAuthenticatedCustomer(request);
         Customer customer = customerService.getCustomerByEmail(email);
         List<Country> countries = customerService.getCountries();
         model.addAttribute("countries", countries);
@@ -92,16 +93,6 @@ public class CustomerController {
         return "customer/account_details";
     }
 
-    private String getEmailOfAuthenticatedCustomer(HttpServletRequest request) {
-        Object principal = request.getUserPrincipal();
-        String customerEmail = null;
-        if (principal instanceof UsernamePasswordAuthenticationToken || principal instanceof RememberMeAuthenticationToken) {
-            customerEmail = request.getUserPrincipal().getName();
-        } else if (principal instanceof OAuth2AuthenticationToken oauth2Token) {
-            customerEmail = oauth2Token.getPrincipal().getAttribute("email");
-        }
-        return customerEmail;
-    }
 
     @PostMapping("/update_account_details")
     public String updateCustomer(Customer customer, HttpServletRequest request, RedirectAttributes redirectAttributes) {

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="quantity_control(quantity, productId)">
+    <nav>
+        <ul class="pagination">
+            <li class="page-item">
+                <a id="minusButton" th:pid="${productId}" class="page-link linkMinus"><b>-</b></a>
+            </li>
+            <li class="page-item">
+                <input th:id="'input' + ${productId}" type="text" th:value="${quantity}" onkeydown="return false;" class="form-control text-center" style="width: 55px"/>
+            </li>
+            <li class="page-item">
+                <a id="plusButton" th:pid="${productId}" class="page-link linkPlus"><b>+</b></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

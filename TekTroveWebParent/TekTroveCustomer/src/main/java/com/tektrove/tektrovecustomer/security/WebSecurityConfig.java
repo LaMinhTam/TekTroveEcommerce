@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,7 +45,7 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/account_details","/update_account_details").authenticated()
+                        .requestMatchers("/account_details","/update_account_details","/cart").authenticated()
                         .anyRequest().permitAll())
                 .formLogin(login -> login.loginPage("/login").usernameParameter("email")
                         .successHandler(databaseLoginSuccessHandler)
@@ -58,7 +59,9 @@ public class WebSecurityConfig {
                 .rememberMe(rememberMe -> rememberMe
                         .key("wc\"7u14UFcRXO%>")
                         .tokenValiditySeconds(86400)
-                        .userDetailsService(this.userDetailsService()));
+                        .userDetailsService(this.userDetailsService()))
+                .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
 
         return httpSecurity.build();
     }

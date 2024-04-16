@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT p FROM Product p WHERE p.enabled = true AND " +
             "(p.category.id = :categoryId OR p.category.allParentIDs LIKE concat('%-', :categoryId, '-%'))")

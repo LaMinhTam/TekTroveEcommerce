@@ -9,15 +9,19 @@
             <b th:text="${product.shortName}"></b>
         </a>
     </div>
-    <div th:if="${product.discountPercent <= 0}">
+    <th:block th:replace="~{products/product_info::product_price}"></th:block>
+</div>
+
+<th:block th:fragment="product_price">
+    <th:block th:if="${product.discountPercent <= 0}">
         <span th:replace="~{products/product_info::price_format(${product.price})}"></span>
-    </div>
-    <div th:if="${product.discountPercent > 0}">
+    </th:block>
+    <th:block th:if="${product.discountPercent > 0}">
         <span style="font-size: larger; color: darkred"><th:block th:replace="~{products/product_info::price_format(${product.discountPrice})}"></th:block></span>
         <br/>
         <del><span th:replace="~{products/product_info::price_format(${product.price})}"></span></del>
-    </div>
-</div>
+    </th:block>
+</th:block>
 
 <th:block th:fragment="price_format(price)" th:remove="tag">
     <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]] </th:block>

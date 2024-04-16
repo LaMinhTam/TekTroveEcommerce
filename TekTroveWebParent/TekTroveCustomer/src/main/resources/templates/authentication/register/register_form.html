@@ -118,6 +118,7 @@
     <div th:replace="~{fragments::footer_menu}"></div>
 </div>
 <script th:src="@{/js/common_customer_form.js}"></script>
+<script th:src="@{/js/modal_common.js}"></script>
 <script>
     const contextPath = "[[@{/}]]";
 
@@ -141,21 +142,6 @@
             }
         });
         return false;
-    }
-
-
-    function showModalDialog(title, message) {
-        $("#modalTitle").text(title);
-        $("#modalBody").text(message);
-        $("#modalDialog").modal();
-    }
-
-    function showErrorModal(message) {
-        showModalDialog("Error", message);
-    }
-
-    function showWarningModal(message) {
-        showModalDialog("Warning", message);
     }
 </script>
 </body>

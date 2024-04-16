@@ -44,7 +44,8 @@
                 <span style="font-size: larger; color: darkred"><th:block
                         th:replace="~{products/product_info::price_format(${product.discountPrice})}"></th:block></span>
 
-                ([[${#numbers.formatDecimal(product.discountPercent, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]% off)
+                ([[${#numbers.formatDecimal(product.discountPercent, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS,
+                DECIMAL_POINT_TYPE)}]]% off)
             </div>
             <div>&nbsp;</div>
             <div th:utext="${product.shortDescription}"></div>
@@ -52,12 +53,14 @@
         <div class="col-sm-2">
             <span th:if="${product.inStock}" class="text-success"><b>In Stock</b></span>
             <span th:unless="${product.inStock}" class="text-danger"><b>Out of Stock</b></span>
-            <div class="mt-2">
-                <input type="text" size="5" value="1"/>
-            </div>
-            <div class="mt-2">
-                <input type="button" value="Add to Cart" class="btn btn-primary"/>
-            </div>
+            <th:block th:if="${product.inStock}">
+                <div class="mt-2">
+                    <div th:replace="~{cart/quantity_control::quantity_control(1, ${product.id})}"></div>
+                </div>
+                <div class="mt-2">
+                    <input type="button" id="buttonAddToCart" value="Add to Cart" class="btn btn-primary"/>
+                </div>
+            </th:block>
         </div>
     </div>
 
@@ -88,23 +91,52 @@
             </th:block>
         </div>
     </div>
-
+    <div th:replace="~{modal_fragments::modal_dialog}"></div>
     <div th:replace="~{fragments::footer_menu}"></div>
     <div th:replace="~{products/product_image_carousel::content}"></div>
 </div>
 </body>
+<script th:src="@{/js/modal_common.js}"></script>
+<script th:src="@{/js/quantity_control.js}"></script>
 <script>
+    const contextPath = "[[@{/}]]";
+    const productId = "[[${product.id}]]";
+    let csrfHeaderName = "[[${_csrf.headerName}]]";
+    let csrfValue = "[[${_csrf.token}]]";
+
     $(document).ready(function () {
         $('.image-thumbnail').mouseover(function () {
             let bigImage = $('#bigImage');
             bigImage.attr('src', $(this).attr('src'));
             bigImage.attr('index', $(this).attr('index'));
         });
+
         $('#bigImage').click(function () {
             $('#carouseModal').modal('show');
             let imageIndex = parseInt($(this).attr('index'));
             $("#carouselExampleIndicators").carousel(imageIndex);
         });
+
+        $('#buttonAddToCart').click(function () {
+            let quantity = $('#input' + productId).val();
+            $.ajax({
+                url: contextPath + 'cart/add/' + productId + '/' + quantity,
+                type: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(csrfHeaderName, csrfValue);
+                },
+                data: {
+                    productId: productId,
+                    quantity: quantity
+                }
+            }).done(function (result) {
+                console.log(result)
+                showModalDialog('Success', result);
+            }).fail(function (result) {
+                showErrorModal(result.responseText);
+            });
+        });
     });
+
 </script>
 </html>
