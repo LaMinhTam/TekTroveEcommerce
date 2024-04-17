@@ -100,5 +100,5 @@ function formatCurrency(amount){
 
 function clearCurrencyFormat(value){
     let result = value.replaceAll(thousandsPointType, '');
-    return value.replaceAll(decimalPointType, '.');
+    return result.replaceAll(decimalPointType, '.');
 }

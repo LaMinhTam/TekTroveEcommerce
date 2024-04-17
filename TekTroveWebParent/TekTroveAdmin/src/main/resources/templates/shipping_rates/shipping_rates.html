@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments::page_header('Shipping Rates')}"></head>
+<body>
+<div th:replace="~{fragments::navbar}"></div>
+<div class="container-fluid">
+    <div>
+        <h1>Manage Shipping Rates</h1>
+        <a th:href="@{/shipping_rates/new}" class="fas fa-folder-plus fa-2x"></a>
+        <a class="fa-solid fa-file-csv fa-2x icon-dark" th:href="@{/shipping_rates/export/csv}"></a>
+    </div>
+
+    <form th:replace="~{fragments::search_form}"></form>
+
+    <div th:if="${message != null}" class="alert alert-success text-center" th:text="${message}"></div>
+
+    <div class="full-details">
+        <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('id', 'Id')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('country', 'Country')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('rate', 'Rate')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('state', 'State')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('days', 'Days')}"></th:block>
+                </th>
+                <th>
+                    <th:block th:replace="~{fragments::sort_link('codSupported', 'Cod Supported')}"></th:block>
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="shipping_rate : ${shipping_rates}">
+                <td th:text="${shipping_rate.id}"></td>
+                <td th:text="${shipping_rate.country.name}"></td>
+                <td th:text="${shipping_rate.rate}"></td>
+                <td th:text="${shipping_rate.state}"></td>
+                <td th:text="${shipping_rate.days}"></td>
+                <td>
+                    <a class="fa-2x fa-solid fa-hand-holding-usd"
+                       th:classappend="${shipping_rate.codSupported} ? 'icon-green' : 'icon-dark'"
+                       th:href="@{/{moduleUrl}/{id}/enabled/{codSupported}(moduleUrl=${moduleUrl},id=${shipping_rate.id},codSupported=${!shipping_rate.codSupported})}">
+                    </a>
+                </td>
+                <td>
+                    <th:block th:replace="~{fragments::edit(${shipping_rate.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${shipping_rate.id})}"></th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="less-details">
+        <div th:each="shipping_rate : ${shipping_rates}" class="row m-1">
+            <div class="col-4">
+                <div th:text="${shipping_rate.country.name}"></div>
+                <div th:text="${shipping_rate.state}"></div>
+            </div>
+            <div class="col-8">
+                <div class="mt-2">
+                    <a class="fa-2x fa-solid fa-hand-holding-usd"
+                       th:classappend="${shipping_rate.codSupported} ? 'icon-green' : 'icon-dark'"
+                       th:href="@{/{moduleUrl}/{id}/enabled/{codSupported}(moduleUrl=${moduleUrl},id=${shipping_rate.id},codSupported=${!shipping_rate.codSupported})}"
+                    ></a>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::edit(${shipping_rate.id})}"></th:block>
+                    &nbsp;
+                    <th:block th:replace="~{fragments::delete(${shipping_rate.id})}"></th:block>
+                </div>
+            </div>
+            <div>&nbsp;</div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments::pagination('shipping_rates')}"></div>
+
+    <div th:replace="~{fragments::footer}"></div>
+
+    <div th:replace="~{modal_fragments::confirmModal}"></div>
+</div>
+<script th:src="@{/js/common_list.js}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".link-delete").on("click", function (e) {
+            e.preventDefault();
+            showDeleteModal($(this), 'brand');
+        })
+    })
+</script>
+
+</body>
+</html>
