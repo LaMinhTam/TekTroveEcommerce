@@ -1,7 +1,7 @@
 package com.tektrove.tektrovecustomer.cart;
 
-import com.tektrovecommon.entity.CartItem;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.CartItem;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -5,7 +5,7 @@ import com.tektrove.tektrovecustomer.security.oauth.CustomerOAuth2User;
 import com.tektrove.tektrovecustomer.setting.SettingService;
 import com.tektrove.tektrovecustomer.utils.AuthenticationUtil;
 import com.tektrove.tektrovecustomer.utils.MailSenderHelper;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.setting.Country;
 import com.tektrovecommon.entity.setting.Setting;
 import com.tektrovecommon.entity.setting.SettingBag;
@@ -99,6 +99,10 @@ public class CustomerController {
         customerService.update(customer);
         redirectAttributes.addFlashAttribute("message", "Your account details have been updatedss!");
         updateNameForAuthenticatedCustomer(customer, request);
+        String redirectOption = request.getParameter("redirect");
+        if (redirectOption != null && redirectOption.equals("addresses")) {
+            return "redirect:/addresses";
+        }
         return "redirect:/account_details";
     }
 

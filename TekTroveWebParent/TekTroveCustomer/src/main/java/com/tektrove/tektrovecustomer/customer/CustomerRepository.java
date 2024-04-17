@@ -1,7 +1,7 @@
 package com.tektrove.tektrovecustomer.customer;
 
 import com.tektrovecommon.entity.AuthenticationType;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

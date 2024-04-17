@@ -1,10 +1,9 @@
 package com.tektrove.tektroveadmin.customer;
 
 import com.tektrove.tektroveadmin.paging.SearchRepository;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 

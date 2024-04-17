@@ -2,20 +2,14 @@ package com.tektrove.tektroveadmin.customer;
 
 import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrove.tektroveadmin.setting.country.CountryRepository;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.setting.Country;
 import com.tektrovecommon.exception.CustomerNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional

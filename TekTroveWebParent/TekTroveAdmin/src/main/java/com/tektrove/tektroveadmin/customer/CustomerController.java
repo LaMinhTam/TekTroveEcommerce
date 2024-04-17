@@ -1,12 +1,10 @@
 package com.tektrove.tektroveadmin.customer;
 
-import com.tektrove.tektroveadmin.category.CategoryPageInfo;
 import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.setting.Country;
 import com.tektrovecommon.exception.CustomerNotFoundException;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

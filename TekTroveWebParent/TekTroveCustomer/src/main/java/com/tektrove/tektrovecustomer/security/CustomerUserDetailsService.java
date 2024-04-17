@@ -1,15 +1,12 @@
 package com.tektrove.tektrovecustomer.security;
 
 import com.tektrove.tektrovecustomer.customer.CustomerRepository;
-import com.tektrovecommon.entity.Customer;
-import com.tektrovecommon.exception.CustomerNotFoundException;
+import com.tektrovecommon.entity.customer.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class CustomerUserDetailsService implements UserDetailsService {

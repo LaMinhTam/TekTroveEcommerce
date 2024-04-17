@@ -2,11 +2,10 @@ package com.tektrove.tektrovecustomer.cart;
 
 import com.tektrove.tektrovecustomer.customer.CustomerService;
 import com.tektrove.tektrovecustomer.utils.AuthenticationUtil;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.exception.CartItemException;
 import com.tektrovecommon.exception.CustomerNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;

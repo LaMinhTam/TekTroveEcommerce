@@ -1,5 +1,6 @@
-package com.tektrovecommon.entity;
+package com.tektrovecommon.entity.customer;
 
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

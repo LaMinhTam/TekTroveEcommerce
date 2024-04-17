@@ -2,7 +2,7 @@ package com.tektrove.tektrovecustomer.security.oauth;
 
 import com.tektrove.tektrovecustomer.customer.CustomerService;
 import com.tektrovecommon.entity.AuthenticationType;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.exception.CustomerNotFoundException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

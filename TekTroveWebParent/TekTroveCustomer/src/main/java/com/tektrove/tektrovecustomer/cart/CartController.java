@@ -2,8 +2,8 @@ package com.tektrove.tektrovecustomer.cart;
 
 import com.tektrove.tektrovecustomer.customer.CustomerService;
 import com.tektrove.tektrovecustomer.utils.AuthenticationUtil;
-import com.tektrovecommon.entity.CartItem;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.CartItem;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.exception.CustomerNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;

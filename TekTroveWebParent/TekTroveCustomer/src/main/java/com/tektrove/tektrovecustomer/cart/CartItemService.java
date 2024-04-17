@@ -1,8 +1,8 @@
 package com.tektrove.tektrovecustomer.cart;
 
 import com.tektrove.tektrovecustomer.product.ProductRepository;
-import com.tektrovecommon.entity.CartItem;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.CartItem;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.exception.CartItemException;
 import org.springframework.stereotype.Service;

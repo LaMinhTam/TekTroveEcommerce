@@ -2,7 +2,7 @@ package com.tektrove.tektrovecustomer.customer;
 
 import com.tektrove.tektrovecustomer.setting.CountryRepository;
 import com.tektrovecommon.entity.AuthenticationType;
-import com.tektrovecommon.entity.Customer;
+import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.setting.Country;
 import com.tektrovecommon.exception.CustomerNotFoundException;
 import net.bytebuddy.utility.RandomString;
