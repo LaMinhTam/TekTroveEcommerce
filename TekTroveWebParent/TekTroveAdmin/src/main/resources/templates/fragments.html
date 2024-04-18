@@ -177,5 +177,20 @@
 <div class="text-center" th:fragment="footer">
     <p>TekTrove Control Panel - Copyright &copy; TekTrove</p>
 </div>
+
+<th:block th:fragment="price_format(price)">
+    <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'Before'}">[[${CURRENCY_SYMBOL}]]</th:block>
+    [[${#numbers.formatDecimal(price, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE)}]]
+    <th:block th:if="${CURRENCY_SYMBOL_POSITION == 'After'}">[[${CURRENCY_SYMBOL}]]</th:block>
+</th:block>
+
+<th:block th:fragment="format_time(dateTime)">
+    <span th:text="${#dates.format(dateTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+</th:block>
+
+<th:block th:fragment="currency_input(amount)">
+    <input type="text" readonly class="form-control"
+           th:value="${(CURRENCY_SYMBOL_POSITION == 'Before price' ? CURRENCY_SYMBOL : '') + #numbers.formatDecimal(amount, 1, THOUSANDS_POINT_TYPE, DECIMAL_DIGITS, DECIMAL_POINT_TYPE) + (CURRENCY_SYMBOL_POSITION == 'After price' ? CURRENCY_SYMBOL : '')}">
+</th:block>
 </body>
 </html>

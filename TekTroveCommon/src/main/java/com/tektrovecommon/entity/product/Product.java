@@ -75,19 +75,6 @@ public class Product implements Exportable {
         return "/product-images/" + this.id + "/" + this.mainImage;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Objects.equals(id, product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     public boolean containsImageName(String fileName) {
         return images.stream().anyMatch(productImage -> productImage.getName().equals(fileName));
     }
