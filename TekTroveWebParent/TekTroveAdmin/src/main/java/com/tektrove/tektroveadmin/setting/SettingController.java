@@ -2,10 +2,7 @@ package com.tektrove.tektroveadmin.setting;
 
 import com.tektrove.tektroveadmin.setting.currency.CurrencyService;
 import com.tektrove.tektroveadmin.utils.FileUploadUtil;
-import com.tektrovecommon.entity.setting.Currency;
-import com.tektrovecommon.entity.setting.GeneralSettingBag;
-import com.tektrovecommon.entity.setting.Setting;
-import com.tektrovecommon.entity.setting.SettingCategory;
+import com.tektrovecommon.entity.setting.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +40,7 @@ public class SettingController {
 
     @PostMapping("/settings/save_general")
     public String saveGeneralSettings(MultipartFile fileImage, HttpServletRequest request, RedirectAttributes redirectAttributes) throws IOException {
-        GeneralSettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.GENERAL, SettingCategory.CURRENCY);
+        SettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.GENERAL, SettingCategory.CURRENCY);
         saveSiteLogo(fileImage, generalSettingBag);
         saveCurrencySymbol(request, generalSettingBag);
         updateSettingValuesFromForm(request, generalSettingBag);
@@ -53,7 +50,7 @@ public class SettingController {
 
     @PostMapping("/settings/save_mail_server")
     public String saveMailServerSettings(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        GeneralSettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.MAIL_SERVER);
+        SettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.MAIL_SERVER);
         updateSettingValuesFromForm(request, generalSettingBag);
         redirectAttributes.addFlashAttribute("message", "Mail server settings saved");
         return "redirect:/settings#mailServer";
@@ -61,13 +58,13 @@ public class SettingController {
 
     @PostMapping("/settings/save_mail_templates")
     public String saveMailTemplatesSettings(HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        GeneralSettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.MAIL_TEMPLATES);
+        SettingBag generalSettingBag = settingService.getSettingBySettingCategories(SettingCategory.MAIL_TEMPLATES);
         updateSettingValuesFromForm(request, generalSettingBag);
         redirectAttributes.addFlashAttribute("message", "Mail templates settings saved");
         return "redirect:/settings#mailTemplates";
     }
 
-    private void saveCurrencySymbol(HttpServletRequest request, GeneralSettingBag generalSettingBag) {
+    private void saveCurrencySymbol(HttpServletRequest request, SettingBag generalSettingBag) {
         int currencyId = Integer.valueOf(request.getParameter("CURRENCY_ID"));
         Optional<Currency> findByIdResult = currencyService.findById(currencyId);
 
@@ -77,7 +74,7 @@ public class SettingController {
         }
     }
 
-    private static void saveSiteLogo(MultipartFile fileImage, GeneralSettingBag generalSettingBag) throws IOException {
+    private static void saveSiteLogo(MultipartFile fileImage, SettingBag generalSettingBag) throws IOException {
         if (!fileImage.isEmpty()) {
             String fileName = StringUtils.cleanPath(fileImage.getOriginalFilename());
             String value = "/site-logo/" + fileName;
@@ -88,7 +85,7 @@ public class SettingController {
         }
     }
 
-    public void updateSettingValuesFromForm(HttpServletRequest request, GeneralSettingBag settingBag) {
+    public void updateSettingValuesFromForm(HttpServletRequest request, SettingBag settingBag) {
         settingBag.list().forEach(setting -> {
             String value = request.getParameter(setting.getKey());
             if (value != null) {

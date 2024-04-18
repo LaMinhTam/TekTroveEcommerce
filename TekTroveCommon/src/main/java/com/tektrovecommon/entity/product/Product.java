@@ -5,6 +5,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.tektrovecommon.entity.Brand;
 import com.tektrovecommon.entity.Category;
 import com.tektrovecommon.entity.Exportable;
+import com.tektrovecommon.entity.IdBaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.apache.poi.ss.usermodel.Row;
@@ -13,16 +14,14 @@ import org.apache.poi.ss.usermodel.Sheet;
 import java.io.IOException;
 import java.util.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "products")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Product implements Exportable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Product extends IdBaseEntity implements Exportable {
     @Column(unique = true, nullable = false)
     private String name;
     @Column(unique = true, nullable = false)
@@ -54,6 +53,10 @@ public class Product implements Exportable {
     private Set<ProductImage> images = new HashSet<>();
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductDetail> details = new ArrayList<>();
+
+    public Product(int id) {
+        this.id = id;
+    }
 
     public void addExtraImage(String imageName) {
         this.images.add(ProductImage.builder().name(imageName).product(this).build());

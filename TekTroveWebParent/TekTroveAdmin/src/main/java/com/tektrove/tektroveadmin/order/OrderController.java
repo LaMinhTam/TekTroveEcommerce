@@ -4,10 +4,7 @@ import com.tektrove.tektroveadmin.paging.PagingAndSortingHelper;
 import com.tektrove.tektroveadmin.paging.PagingAndSortingParam;
 import com.tektrove.tektroveadmin.setting.SettingService;
 import com.tektrovecommon.entity.order.Order;
-import com.tektrovecommon.entity.setting.Country;
-import com.tektrovecommon.entity.setting.GeneralSettingBag;
-import com.tektrovecommon.entity.setting.Setting;
-import com.tektrovecommon.entity.setting.SettingCategory;
+import com.tektrovecommon.entity.setting.*;
 import com.tektrovecommon.exception.OrderNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -48,7 +45,7 @@ public class OrderController {
     }
 
     private void loadCurrencySetting(HttpServletRequest request) {
-        GeneralSettingBag currencySettings = settingService.getSettingBySettingCategories(SettingCategory.CURRENCY);
+        SettingBag currencySettings = settingService.getSettingBySettingCategories(SettingCategory.CURRENCY);
 
         for (Setting setting : currencySettings.list()) {
             request.setAttribute(setting.getKey(), setting.getValue());

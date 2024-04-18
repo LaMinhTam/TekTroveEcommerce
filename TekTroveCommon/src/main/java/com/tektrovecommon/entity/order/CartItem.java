@@ -1,23 +1,19 @@
-package com.tektrovecommon.entity.customer;
+package com.tektrovecommon.entity.order;
 
+import com.tektrovecommon.entity.IdBaseEntity;
 import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.product.Product;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "cart_items")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class CartItem extends IdBaseEntity {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

@@ -1,7 +1,7 @@
 package com.tektrove.tektrovecustomer.cart;
 
 import com.tektrove.tektrovecustomer.product.ProductRepository;
-import com.tektrovecommon.entity.customer.CartItem;
+import com.tektrovecommon.entity.order.CartItem;
 import com.tektrovecommon.entity.customer.Customer;
 import com.tektrovecommon.entity.product.Product;
 import com.tektrovecommon.exception.CartItemException;
@@ -26,8 +26,8 @@ public class CartItemService {
         Optional<CartItem> cartItem = cartItemRepository.findByCustomer_IdAndProduct_Id(customerId, productId);
         if (cartItem.isEmpty()) {
             cartItemRepository.save(CartItem.builder()
-                    .customer(Customer.builder().id(customerId).build())
-                    .product(Product.builder().id(productId).build())
+                    .customer(new Customer(customerId))
+                    .product(new Product(productId))
                     .quantity(quantity)
                     .build());
             return quantity;

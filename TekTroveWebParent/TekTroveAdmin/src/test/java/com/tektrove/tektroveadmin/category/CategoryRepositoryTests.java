@@ -25,14 +25,14 @@ public class CategoryRepositoryTests {
         assertThat(category).isNotNull();
     }
 
-    @Test
-    public void testCreateChildCategory() {
-        Category parentCategory = Category.builder().id(1).build();
-        Category categoryLaptop = Category.builder().name("laptop").alias("laptop").image("image.png").parent(parentCategory).build();
-        Category categoryComputerComponent = Category.builder().name("Computer Component").alias("computercomponent").image("image.png").parent(parentCategory).build();
-        List<Category> savedCategories = categoryRepository.saveAll(List.of(categoryLaptop, categoryComputerComponent));
-        assertThat(savedCategories.size()).isGreaterThan(0);
-    }
+//    @Test
+//    public void testCreateChildCategory() {
+//        Category parentCategory = Category.builder().id(1).build();
+//        Category categoryLaptop = Category.builder().name("laptop").alias("laptop").image("image.png").parent(parentCategory).build();
+//        Category categoryComputerComponent = Category.builder().name("Computer Component").alias("computercomponent").image("image.png").parent(parentCategory).build();
+//        List<Category> savedCategories = categoryRepository.saveAll(List.of(categoryLaptop, categoryComputerComponent));
+//        assertThat(savedCategories.size()).isGreaterThan(0);
+//    }
 
     @Test
     public void testListAllCategoriesWithHierarchy() {

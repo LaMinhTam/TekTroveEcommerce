@@ -1,40 +1,25 @@
 package com.tektrovecommon.entity.order;
 
+import com.tektrovecommon.entity.AbstractAddress;
+import com.tektrovecommon.entity.IdBaseEntity;
 import com.tektrovecommon.entity.customer.Customer;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "orders")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(nullable = false, length = 45)
-    private String firstName;
-    @Column(nullable = false, length = 45)
-    private String lastName;
-    @Column(nullable = false, length = 15)
-    private String phoneNumber;
-    @Column(nullable = false, length = 64)
-    private String addressLine1;
-    @Column(length = 64)
-    private String addressLine2;
-    @Column(nullable = false, length = 45)
-    private String city;
-    @Column(nullable = false, length = 45)
-    private String state;
-    @Column(nullable = false, length = 10)
-    private String postalCode;
+public class Order extends AbstractAddress {
     @Column(nullable = false, length = 45)
     private String country;
     private Date orderTime;

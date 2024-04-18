@@ -12,16 +12,14 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "brands")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Brand  implements Exportable{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Brand extends IdBaseEntity implements Exportable{
     @Column(nullable = false, length = 45, unique = true)
     private String name;
     @Column(nullable = false, length = 128)

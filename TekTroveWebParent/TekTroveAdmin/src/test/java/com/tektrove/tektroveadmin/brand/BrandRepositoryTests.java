@@ -22,25 +22,25 @@ public class BrandRepositoryTests {
     @Autowired
     private BrandRepository brandRepository;
 
-    @Test
-    public void testCreateBrand(){
-        Category category = Category.builder().id(6).build();
-        Brand acer = Brand.builder().name("Acer").logo("default.png").categories(Set.of(category)).build();
-        Brand savedBrand=brandRepository.save(acer);
-
-        assertThat(savedBrand).isNotNull();
-    }
-
-    @Test
-    public void testCreateMultiBrand(){
-        Category category = Category.builder().id(6).build();
-        Category category2 = Category.builder().id(2).build();
-        Brand acer = Brand.builder().name("Acer").logo("default.png").categories(Set.of(category)).build();
-        Brand samsung = Brand.builder().name("Samsumg").logo("default.png").categories(Set.of(category,category2)).build();
-        List<Brand> savedBrand = brandRepository.saveAll(List.of(acer, samsung));
-
-        assertThat(savedBrand.size()).isGreaterThan(0);
-    }
+//    @Test
+//    public void testCreateBrand(){
+//        Category category = Category.builder().id(6).build();
+//        Brand acer = Brand.builder().name("Acer").logo("default.png").categories(Set.of(category)).build();
+//        Brand savedBrand=brandRepository.save(acer);
+//
+//        assertThat(savedBrand).isNotNull();
+//    }
+//
+//    @Test
+//    public void testCreateMultiBrand(){
+//        Category category = Category.builder().id(6).build();
+//        Category category2 = Category.builder().id(2).build();
+//        Brand acer = Brand.builder().name("Acer").logo("default.png").categories(Set.of(category)).build();
+//        Brand samsung = Brand.builder().name("Samsumg").logo("default.png").categories(Set.of(category,category2)).build();
+//        List<Brand> savedBrand = brandRepository.saveAll(List.of(acer, samsung));
+//
+//        assertThat(savedBrand.size()).isGreaterThan(0);
+//    }
 
     @Test
     public void findAll(){

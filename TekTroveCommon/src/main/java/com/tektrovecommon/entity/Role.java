@@ -14,10 +14,7 @@ import java.util.Objects;
 @Data
 @Builder
 @Table(name = "roles")
-public class Role {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Role extends IdBaseEntity{
     @Column(length = 40, nullable = false, unique = true)
     private String name;
     @Column(length = 150, nullable = false)
@@ -25,6 +22,12 @@ public class Role {
 
     public Role(Integer id) {
         this.id = id;
+    }
+
+    public Role(int id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
     }
 
     @Override

@@ -19,10 +19,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @ToString(exclude = {"parent", "children"})
-public class Category implements Exportable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Category extends IdBaseEntity implements Exportable {
     @Column(length = 128, nullable = false, unique = true)
     private String name;
     @Column(length = 64, nullable = false, unique = true)

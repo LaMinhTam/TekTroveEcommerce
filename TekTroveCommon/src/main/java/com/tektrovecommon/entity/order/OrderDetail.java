@@ -1,5 +1,6 @@
 package com.tektrovecommon.entity.order;
 
+import com.tektrovecommon.entity.IdBaseEntity;
 import com.tektrovecommon.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,10 +14,7 @@ import java.util.Objects;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class OrderDetail extends IdBaseEntity {
     private int quantity;
     private float productCost;
     private float shippingCost;

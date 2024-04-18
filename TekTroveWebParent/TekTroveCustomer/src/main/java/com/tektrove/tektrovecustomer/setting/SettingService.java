@@ -1,9 +1,7 @@
 package com.tektrove.tektrovecustomer.setting;
 
-import com.tektrovecommon.entity.setting.GeneralSettingBag;
 import com.tektrovecommon.entity.setting.Setting;
 import com.tektrovecommon.entity.setting.SettingCategory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
